@@ -2,6 +2,7 @@ package com.geonwoo.assemble.domain.party.controller;
 
 import com.geonwoo.assemble.domain.party.dto.PartyCreateDTO;
 import com.geonwoo.assemble.domain.party.dto.PartyDTO;
+import com.geonwoo.assemble.domain.party.dto.PartyUpdateDTO;
 import com.geonwoo.assemble.domain.party.service.PartyService;
 import com.geonwoo.assemble.global.dto.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,5 +39,16 @@ public class PartyController {
             ) {
         PartyDTO partyDTO = partyService.findById(id);
         return ResponseEntity.ok(new ApiResponse<>(partyDTO));
+    }
+
+    @PatchMapping(value = "/partys/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApiResponse<PartyDTO>> update
+            (
+                    @PathVariable("id") Long id,
+                    @RequestBody PartyUpdateDTO partyUpdateDTO
+            ) {
+        PartyDTO partyDTO = partyService.update(id, partyUpdateDTO);
+        return ResponseEntity.ok(new ApiResponse<>(partyDTO));
+
     }
 }

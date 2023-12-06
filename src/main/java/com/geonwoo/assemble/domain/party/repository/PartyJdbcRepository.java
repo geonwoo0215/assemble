@@ -1,11 +1,14 @@
 package com.geonwoo.assemble.domain.party.repository;
 
+import com.geonwoo.assemble.domain.party.dto.PartyUpdateDTO;
 import com.geonwoo.assemble.domain.party.model.Party;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -40,6 +43,21 @@ public class PartyJdbcRepository {
             Map<String, Long> param = Map.of("id", id);
             Party party = template.queryForObject(sql, param, partyRowMapper());
             return Optional.of(party);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void update(Long id, PartyUpdateDTO partyUpdateDTO) {
+        String sql = "update party set name=:name, content=:content, start_date=:startDate where id=:id";
+
+        try {
+            SqlParameterSource param = new MapSqlParameterSource()
+                    .addValue("name", partyUpdateDTO.getName())
+                    .addValue("content", partyUpdateDTO.getContent())
+                    .addValue("startDate", partyUpdateDTO.getStartDate())
+                    .addValue("id", id);
+            template.update(sql, param);
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }

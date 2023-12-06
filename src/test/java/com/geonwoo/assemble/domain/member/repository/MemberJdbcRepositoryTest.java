@@ -37,12 +37,13 @@ class MemberJdbcRepositoryTest {
     @Test
     void findByLoginId() {
         Member member = new Member("loginId", "password", "email");
-        repository.save(member);
+        Long id = repository.save(member);
 
         Optional<Member> optionalMember = repository.findByLoginId(member.getLoginId());
         assertThat(optionalMember).isPresent();
         Member saveMember = optionalMember.get();
         assertThat(saveMember)
+                .hasFieldOrPropertyWithValue("id", id)
                 .hasFieldOrPropertyWithValue("loginId", member.getLoginId())
                 .hasFieldOrPropertyWithValue("password", member.getPassword())
                 .hasFieldOrPropertyWithValue("email", member.getEmail())

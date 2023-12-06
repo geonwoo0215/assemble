@@ -2,6 +2,7 @@ package com.geonwoo.assemble.domain.party.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.geonwoo.assemble.domain.party.dto.PartyCreateDTO;
+import com.geonwoo.assemble.domain.party.dto.PartyUpdateDTO;
 import com.geonwoo.assemble.domain.party.model.Party;
 import com.geonwoo.assemble.domain.party.repository.PartyJdbcRepository;
 import org.hamcrest.Matchers;
@@ -62,5 +63,27 @@ class PartyControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.content").value(party.getContent()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.startDate").value(party.getStartDate().toString()))
                 .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @Transactional
+    void update() throws Exception {
+
+        Party party = new Party("name", "content", LocalDate.now());
+        Long id = partyJdbcRepository.save(party);
+
+        PartyUpdateDTO partyUpdateDTO = new PartyUpdateDTO("updateName", "updateContent", LocalDate.now().plusDays(1));
+        String json = objectMapper.writeValueAsString(partyUpdateDTO);
+        mockMvc.perform(MockMvcRequestBuilders.patch("/partys/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.id").value(id))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.name").value(partyUpdateDTO.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.content").value(partyUpdateDTO.getContent()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.startDate").value(partyUpdateDTO.getStartDate().toString()))
+                .andDo(MockMvcResultHandlers.print());
+
     }
 }
