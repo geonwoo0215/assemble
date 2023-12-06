@@ -41,14 +41,23 @@ public class PartyController {
         return ResponseEntity.ok(new ApiResponse<>(partyDTO));
     }
 
-    @PatchMapping(value = "/partys/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponse<PartyDTO>> update
+    @PatchMapping(value = "/partys/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> update
             (
                     @PathVariable("id") Long id,
                     @RequestBody PartyUpdateDTO partyUpdateDTO
             ) {
-        PartyDTO partyDTO = partyService.update(id, partyUpdateDTO);
-        return ResponseEntity.ok(new ApiResponse<>(partyDTO));
+        partyService.update(id, partyUpdateDTO);
+        return ResponseEntity.ok().build();
 
+    }
+
+    @DeleteMapping(value = "/partys/{id}")
+    public ResponseEntity<Void> delete
+            (
+                    @PathVariable("id") Long id
+            ) {
+        partyService.delete(id);
+        return ResponseEntity.ok().build();
     }
 }

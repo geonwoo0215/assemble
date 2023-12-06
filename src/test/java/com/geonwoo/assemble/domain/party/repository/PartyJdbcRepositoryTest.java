@@ -69,4 +69,14 @@ class PartyJdbcRepositoryTest {
                 .hasFieldOrPropertyWithValue("content", partyUpdateDTO.getContent())
                 .hasFieldOrPropertyWithValue("startDate", partyUpdateDTO.getStartDate());
     }
+
+    @Test
+    void delete() {
+        Party party = new Party("name", "content", LocalDate.now());
+        Long id = repository.save(party);
+
+        repository.delete(id);
+
+        Assertions.assertThatThrownBy(() -> repository.findById(id)).isInstanceOf(RuntimeException.class);
+    }
 }

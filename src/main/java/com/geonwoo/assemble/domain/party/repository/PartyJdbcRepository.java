@@ -63,6 +63,16 @@ public class PartyJdbcRepository {
         }
     }
 
+    public void delete(Long id) {
+        String sql = "delete from party where id =:id";
+        try {
+            Map<String, Long> param = Map.of("id", id);
+            template.update(sql, param);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private RowMapper<Party> partyRowMapper() {
         return BeanPropertyRowMapper.newInstance(Party.class);
     }

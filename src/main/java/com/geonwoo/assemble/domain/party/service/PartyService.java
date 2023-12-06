@@ -35,11 +35,12 @@ public class PartyService {
     }
 
     @Transactional
-    public PartyDTO update(Long id, PartyUpdateDTO partyUpdateDTO) {
-
+    public void update(Long id, PartyUpdateDTO partyUpdateDTO) {
         partyJdbcRepository.update(id, partyUpdateDTO);
-        PartyDTO partyDTO = new PartyDTO(id, partyUpdateDTO.getName(), partyUpdateDTO.getContent(), partyUpdateDTO.getStartDate());
+    }
 
-        return partyDTO;
+    @Transactional
+    public void delete(Long id) {
+        partyJdbcRepository.delete(id);
     }
 }

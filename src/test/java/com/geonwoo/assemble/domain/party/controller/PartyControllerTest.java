@@ -76,14 +76,21 @@ class PartyControllerTest {
         String json = objectMapper.writeValueAsString(partyUpdateDTO);
         mockMvc.perform(MockMvcRequestBuilders.patch("/partys/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(json)
-                        .accept(MediaType.APPLICATION_JSON))
+                        .content(json))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.id").value(id))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.name").value(partyUpdateDTO.getName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.content").value(partyUpdateDTO.getContent()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.startDate").value(partyUpdateDTO.getStartDate().toString()))
                 .andDo(MockMvcResultHandlers.print());
 
+    }
+
+    @Test
+    @Transactional
+    void delete() throws Exception {
+
+        Party party = new Party("name", "content", LocalDate.now());
+        Long id = partyJdbcRepository.save(party);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/partys/{id}", id))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
     }
 }
