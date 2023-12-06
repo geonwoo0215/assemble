@@ -1,6 +1,5 @@
 package com.geonwoo.assemble.domain.member.service;
 
-import com.geonwoo.assemble.domain.member.dto.MemberDTO;
 import com.geonwoo.assemble.domain.member.dto.MemberSignUpDTO;
 import com.geonwoo.assemble.domain.member.model.Member;
 import com.geonwoo.assemble.domain.member.repository.MemberJdbcRepository;
@@ -15,6 +14,7 @@ public class MemberService {
     private final MemberJdbcRepository memberJdbcRepository;
 
     private final BCryptPasswordEncoder encoder;
+
     public Long singUp(MemberSignUpDTO memberJoinDTO) {
 
         String encodePassword = encoder.encode(memberJoinDTO.getPassword());
