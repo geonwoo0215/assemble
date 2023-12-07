@@ -3,9 +3,8 @@ package com.geonwoo.assemble.domain.party.repository;
 import com.geonwoo.assemble.domain.party.dto.PartyUpdateDTO;
 import com.geonwoo.assemble.domain.party.model.Party;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.test.context.jdbc.Sql;
@@ -16,7 +15,6 @@ import java.util.Optional;
 
 @JdbcTest
 @Sql("classpath:schema.sql")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PartyJdbcRepositoryTest {
 
     @Autowired
@@ -24,7 +22,7 @@ class PartyJdbcRepositoryTest {
 
     PartyJdbcRepository repository;
 
-    @BeforeAll
+    @BeforeEach
     void setUp() {
         repository = new PartyJdbcRepository(dataSource);
     }

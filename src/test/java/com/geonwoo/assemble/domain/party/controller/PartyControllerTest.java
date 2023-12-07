@@ -3,15 +3,14 @@ package com.geonwoo.assemble.domain.party.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.geonwoo.assemble.domain.member.model.Member;
 import com.geonwoo.assemble.domain.member.repository.MemberJdbcRepository;
-import com.geonwoo.assemble.domain.party.dto.PartyCreateDTO;
+import com.geonwoo.assemble.domain.party.dto.PartySaveDTO;
 import com.geonwoo.assemble.domain.party.dto.PartyUpdateDTO;
 import com.geonwoo.assemble.domain.party.model.Party;
 import com.geonwoo.assemble.domain.party.repository.PartyJdbcRepository;
 import com.geonwoo.assemble.global.auth.jwt.JwtTokenProvider;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,7 +26,6 @@ import java.time.LocalDate;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PartyControllerTest {
 
     @Autowired
@@ -47,18 +45,18 @@ class PartyControllerTest {
 
     String token;
 
-    @BeforeAll
+    @BeforeEach
     void setUp() {
         Member member = new Member("loginId", "password", "email");
-        memberJdbcRepository.save(member);
-        token = jwtTokenProvider.createToken(member.getId(), member.getRole());
+        Long id = memberJdbcRepository.save(member);
+        token = jwtTokenProvider.createToken(id, member.getRole());
     }
 
     @Test
     @Transactional
     void save() throws Exception {
 
-        PartyCreateDTO partyCreateDTO = new PartyCreateDTO("name", "content", LocalDate.now());
+        PartySaveDTO partyCreateDTO = new PartySaveDTO("name", "content", LocalDate.now());
         String json = objectMapper.writeValueAsString(partyCreateDTO);
         mockMvc.perform(MockMvcRequestBuilders.post("/partys")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)

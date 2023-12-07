@@ -1,7 +1,7 @@
 package com.geonwoo.assemble.domain.party.controller;
 
-import com.geonwoo.assemble.domain.party.dto.PartyCreateDTO;
 import com.geonwoo.assemble.domain.party.dto.PartyDTO;
+import com.geonwoo.assemble.domain.party.dto.PartySaveDTO;
 import com.geonwoo.assemble.domain.party.dto.PartyUpdateDTO;
 import com.geonwoo.assemble.domain.party.service.PartyService;
 import com.geonwoo.assemble.global.dto.ApiResponse;
@@ -22,7 +22,7 @@ public class PartyController {
     @PostMapping(value = "/partys", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<Long>> save
             (
-                    @RequestBody PartyCreateDTO partyCreateDTO,
+                    @RequestBody PartySaveDTO partyCreateDTO,
                     HttpServletRequest request
             ) {
         Long id = partyService.save(partyCreateDTO);

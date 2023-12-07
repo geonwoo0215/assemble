@@ -1,7 +1,7 @@
 package com.geonwoo.assemble.domain.party.service;
 
-import com.geonwoo.assemble.domain.party.dto.PartyCreateDTO;
 import com.geonwoo.assemble.domain.party.dto.PartyDTO;
+import com.geonwoo.assemble.domain.party.dto.PartySaveDTO;
 import com.geonwoo.assemble.domain.party.dto.PartyUpdateDTO;
 import com.geonwoo.assemble.domain.party.model.Party;
 import com.geonwoo.assemble.domain.party.repository.PartyJdbcRepository;
@@ -17,7 +17,7 @@ public class PartyService {
 
 
     @Transactional
-    public Long save(PartyCreateDTO partyCreateDTO) {
+    public Long save(PartySaveDTO partyCreateDTO) {
 
         Party party = partyCreateDTO.toParty();
         Long id = partyJdbcRepository.save(party);

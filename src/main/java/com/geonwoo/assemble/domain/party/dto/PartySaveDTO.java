@@ -6,13 +6,13 @@ import lombok.Getter;
 import java.time.LocalDate;
 
 @Getter
-public class PartyCreateDTO {
+public class PartySaveDTO {
 
     private String name;
     private String content;
     private LocalDate startDate;
 
-    public PartyCreateDTO(String name, String content, LocalDate startDate) {
+    public PartySaveDTO(String name, String content, LocalDate startDate) {
         this.name = name;
         this.content = content;
         this.startDate = startDate;
