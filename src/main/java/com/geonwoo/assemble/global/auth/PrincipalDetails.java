@@ -1,6 +1,7 @@
 package com.geonwoo.assemble.global.auth;
 
 import com.geonwoo.assemble.domain.member.model.Member;
+import com.geonwoo.assemble.domain.member.model.MemberRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -20,6 +21,14 @@ public class PrincipalDetails implements UserDetails {
         Collection<GrantedAuthority> collections = new ArrayList<>();
         collections.add(() -> member.getRole().name());
         return collections;
+    }
+
+    public Long getUserId() {
+        return member.getId();
+    }
+
+    public MemberRole getMemberRole() {
+        return member.getRole();
     }
 
     @Override
