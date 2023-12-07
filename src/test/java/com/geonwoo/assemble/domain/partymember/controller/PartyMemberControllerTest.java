@@ -6,7 +6,9 @@ import com.geonwoo.assemble.domain.member.repository.MemberJdbcRepository;
 import com.geonwoo.assemble.domain.party.model.Party;
 import com.geonwoo.assemble.domain.party.repository.PartyJdbcRepository;
 import com.geonwoo.assemble.domain.partymember.dto.PartyMemberSaveDTO;
+import com.geonwoo.assemble.domain.partymember.model.PartyMember;
 import com.geonwoo.assemble.domain.partymember.model.PartyMemberRole;
+import com.geonwoo.assemble.domain.partymember.repository.PartyMemberJdbcRepository;
 import com.geonwoo.assemble.global.auth.jwt.JwtTokenProvider;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,6 +41,9 @@ class PartyMemberControllerTest {
 
     @Autowired
     PartyJdbcRepository partyJdbcRepository;
+
+    @Autowired
+    PartyMemberJdbcRepository partyMemberJdbcRepository;
 
     @Autowired
     JwtTokenProvider jwtTokenProvider;
@@ -77,5 +82,18 @@ class PartyMemberControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data").exists())
                 .andDo(MockMvcResultHandlers.print());
 
+    }
+
+    @Test
+    @Transactional
+    void delete() throws Exception {
+
+        PartyMember partyMember = new PartyMember(partyId, memberId, PartyMemberRole.MEMBER);
+        Long id = partyMemberJdbcRepository.save(partyMember);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/partyMembers/{id}", id)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
     }
 }

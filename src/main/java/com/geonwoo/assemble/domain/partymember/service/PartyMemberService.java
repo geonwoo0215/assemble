@@ -19,4 +19,9 @@ public class PartyMemberService {
         Long id = repository.save(partyMember);
         return id;
     }
+
+    @Transactional
+    public void delete(Long id) {
+        repository.delete(id);
+    }
 }

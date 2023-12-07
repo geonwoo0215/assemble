@@ -44,7 +44,7 @@ public class PartyJdbcRepository {
             Party party = template.queryForObject(sql, param, partyRowMapper());
             return Optional.of(party);
         } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            return Optional.empty();
         }
     }
 

@@ -7,9 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
@@ -32,5 +30,14 @@ public class PartyMemberController {
                 .body(new ApiResponse<>(id));
 
     }
+
+    @DeleteMapping(value = "/partyMembers/{id}")
+    public ResponseEntity<Void> delete(
+            @PathVariable("id") Long id
+    ) {
+        partyMemberService.delete(id);
+        return ResponseEntity.ok().build();
+    }
+
 
 }

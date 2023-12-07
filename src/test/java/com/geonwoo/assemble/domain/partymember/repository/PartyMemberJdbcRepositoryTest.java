@@ -15,6 +15,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import javax.sql.DataSource;
 import java.time.LocalDate;
+import java.util.Optional;
 
 @JdbcTest
 @Sql("classpath:schema.sql")
@@ -28,7 +29,6 @@ class PartyMemberJdbcRepositoryTest {
     DataSource dataSource;
 
     Long memberId;
-
     Long partyId;
 
     @BeforeEach
@@ -48,19 +48,19 @@ class PartyMemberJdbcRepositoryTest {
     @Test
     void save() {
 
-        memberJdbcRepository = new MemberJdbcRepository(dataSource);
-        partyJdbcRepository = new PartyJdbcRepository(dataSource);
-        partyMemberJdbcRepository = new PartyMemberJdbcRepository(dataSource);
-
-        Member member = new Member("loginId", "password", "email");
-        memberId = memberJdbcRepository.save(member);
-
-        Party party = new Party("name", "content", LocalDate.now());
-        partyId = partyJdbcRepository.save(party);
-
         PartyMember partyMember = new PartyMember(partyId, memberId, PartyMemberRole.MEMBER);
         Long id = partyMemberJdbcRepository.save(partyMember);
         Assertions.assertThat(id).isNotNull();
+    }
+
+    @Test
+    void delete() {
+        PartyMember partyMember = new PartyMember(partyId, memberId, PartyMemberRole.MEMBER);
+        Long id = partyMemberJdbcRepository.save(partyMember);
+        partyMemberJdbcRepository.delete(id);
+
+        Optional<PartyMember> optionalPartyMember = partyMemberJdbcRepository.findById(id);
+        Assertions.assertThat(optionalPartyMember).isEmpty();
     }
 
 
