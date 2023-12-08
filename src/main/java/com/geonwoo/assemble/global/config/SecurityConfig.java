@@ -34,6 +34,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/partys/**").authenticated()
                         .requestMatchers("/partyMembers/**").authenticated()
+                        .requestMatchers("/expense/**").authenticated()
                         .anyRequest().permitAll())
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

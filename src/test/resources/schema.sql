@@ -1,3 +1,5 @@
+drop table if exists party_member_expense CASCADE;
+drop table if exists expense CASCADE;
 drop table if exists party_member CASCADE;
 drop table if exists party CASCADE;
 drop table if exists member CASCADE;
@@ -29,3 +31,24 @@ create table party_member
     FOREIGN KEY (party_id) REFERENCES party (id),
     FOREIGN KEY (member_id) REFERENCES member (id)
 );
+
+create table expense
+(
+    id       bigint auto_increment primary key,
+    party_id bigint      NOT NULL,
+    price    int         NOT NULL,
+    content  varchar(20) NOT NULL,
+
+    FOREIGN KEY (party_id) REFERENCES party (id)
+);
+
+create table party_member_expense
+(
+    id              bigint auto_increment primary key,
+    party_id        bigint  NOT NULL,
+    party_member_id bigint  NOT NULL,
+    payer           tinyint NOT NULL,
+
+    FOREIGN KEY (party_id) references party (id),
+    FOREIGN KEY (party_member_id) references party_member (id)
+)

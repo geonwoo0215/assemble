@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -23,9 +24,10 @@ public class PartyController {
     public ResponseEntity<ApiResponse<Long>> save
             (
                     @RequestBody PartySaveDTO partyCreateDTO,
+                    @AuthenticationPrincipal Long userId,
                     HttpServletRequest request
             ) {
-        Long id = partyService.save(partyCreateDTO);
+        Long id = partyService.save(userId, partyCreateDTO);
         return ResponseEntity
                 .created(URI.create(request.getRequestURI() + "/" + id))
                 .body(new ApiResponse<>(id));
