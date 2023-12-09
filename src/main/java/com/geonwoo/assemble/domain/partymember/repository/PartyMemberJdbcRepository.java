@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -41,6 +42,20 @@ public class PartyMemberJdbcRepository {
         } catch (DataAccessException e) {
             return Optional.empty();
         }
+    }
+
+    public List<PartyMember> findAllByPartyId(Long partyId) {
+
+        String sql = "select * from party_member where party_id=:partyId";
+
+        try {
+            Map<String, Long> param = Map.of("partyId", partyId);
+            List<PartyMember> list = template.query(sql, param, partyMemberRowMapper());
+            return list;
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public void delete(Long id) {

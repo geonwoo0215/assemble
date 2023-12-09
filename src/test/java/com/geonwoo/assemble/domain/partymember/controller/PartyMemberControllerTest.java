@@ -73,12 +73,12 @@ class PartyMemberControllerTest {
         PartyMemberSaveDTO partyMemberSaveDTO = new PartyMemberSaveDTO(partyId, memberId, PartyMemberRole.MEMBER);
         String json = objectMapper.writeValueAsString(partyMemberSaveDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/partyMembers")
+        mockMvc.perform(MockMvcRequestBuilders.post("/partys/{partyId}/partyMembers", partyId)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.header().string("Location", Matchers.startsWith("/partyMembers/")))
+                .andExpect(MockMvcResultMatchers.header().string("Location", Matchers.startsWith("/partys/" + partyId + "/partyMembers")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data").exists())
                 .andDo(MockMvcResultHandlers.print());
 
@@ -91,9 +91,24 @@ class PartyMemberControllerTest {
         PartyMember partyMember = new PartyMember(partyId, memberId, PartyMemberRole.MEMBER);
         Long id = partyMemberJdbcRepository.save(partyMember);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/partyMembers/{id}", id)
+        mockMvc.perform(MockMvcRequestBuilders.delete("/partys/{partyId}/partyMembers/{id}", partyId, id)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @Transactional
+    void findAllByPartyId() throws Exception {
+
+        PartyMember partyMember = new PartyMember(partyId, memberId, PartyMemberRole.MEMBER);
+        partyMemberJdbcRepository.save(partyMember);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/partys/{partyId}/partyMembers", partyId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").exists())
                 .andDo(MockMvcResultHandlers.print());
     }
 }

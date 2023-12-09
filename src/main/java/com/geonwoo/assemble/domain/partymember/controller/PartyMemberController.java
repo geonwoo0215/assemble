@@ -1,5 +1,6 @@
 package com.geonwoo.assemble.domain.partymember.controller;
 
+import com.geonwoo.assemble.domain.partymember.dto.PartyMemberDTO;
 import com.geonwoo.assemble.domain.partymember.dto.PartyMemberSaveDTO;
 import com.geonwoo.assemble.domain.partymember.service.PartyMemberService;
 import com.geonwoo.assemble.global.dto.ApiResponse;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,7 +19,7 @@ public class PartyMemberController {
 
     private final PartyMemberService partyMemberService;
 
-    @PostMapping(value = "/partyMembers", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/partys/{partyId}/partyMembers", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<Long>> save
             (
                     @RequestBody PartyMemberSaveDTO partyMemberSaveDTO,
@@ -31,7 +33,15 @@ public class PartyMemberController {
 
     }
 
-    @DeleteMapping(value = "/partyMembers/{id}")
+    @GetMapping(value = "/partys/{partyId}/partyMembers", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApiResponse<List<PartyMemberDTO>>> findAllByPartyId(
+            @PathVariable("partyId") Long partyId
+    ) {
+        List<PartyMemberDTO> list = partyMemberService.findAllByPartyId(partyId);
+        return ResponseEntity.ok(new ApiResponse<>(list));
+    }
+
+    @DeleteMapping(value = "/partys/{partyId}/partyMembers/{id}")
     public ResponseEntity<Void> delete(
             @PathVariable("id") Long id
     ) {
