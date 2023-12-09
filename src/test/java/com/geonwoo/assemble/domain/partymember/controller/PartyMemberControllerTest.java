@@ -56,7 +56,7 @@ class PartyMemberControllerTest {
 
     @BeforeEach
     void setUp() {
-        Member member = new Member("loginId", "password", "email");
+        Member member = new Member("loginId", "password", "email", "nickname");
         memberId = memberJdbcRepository.save(member);
 
         Party party = new Party("name", "content", LocalDate.now());

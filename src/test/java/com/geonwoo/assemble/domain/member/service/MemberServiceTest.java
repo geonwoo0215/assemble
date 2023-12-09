@@ -27,7 +27,7 @@ class MemberServiceTest {
     @Test
     void signUp() {
 
-        MemberSignUpDTO memberSignUpDTO = new MemberSignUpDTO("loginId", "password", "email");
+        MemberSignUpDTO memberSignUpDTO = new MemberSignUpDTO("loginId", "password", "email", "nickname");
 
         when(encoder.encode(memberSignUpDTO.getPassword())).thenReturn("encodePassword");
         when(repository.save(any(Member.class))).thenReturn(1L);

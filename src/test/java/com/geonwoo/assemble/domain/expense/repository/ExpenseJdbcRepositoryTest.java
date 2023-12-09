@@ -14,6 +14,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import javax.sql.DataSource;
 import java.time.LocalDate;
+import java.util.Optional;
 
 @JdbcTest
 @Sql("classpath:schema.sql")
@@ -33,7 +34,7 @@ class ExpenseJdbcRepositoryTest {
         memberJdbcRepository = new MemberJdbcRepository(dataSource);
         partyJdbcRepository = new PartyJdbcRepository(dataSource);
         expenseJdbcRepository = new ExpenseJdbcRepository(dataSource);
-        Member member = new Member("loginId", "password", "email");
+        Member member = new Member("loginId", "password", "email", "nickname");
         memberId = memberJdbcRepository.save(member);
 
         Party party = new Party("name", "content", LocalDate.now());
@@ -42,9 +43,24 @@ class ExpenseJdbcRepositoryTest {
 
     @Test
     void save() {
-
         Expense expense = new Expense(partyId, 1000, "1차 비용");
         Long id = expenseJdbcRepository.save(expense);
         Assertions.assertThat(id).isNotNull();
+    }
+
+    @Test
+    void findById() {
+        Expense expense = new Expense(partyId, 1000, "1차 비용");
+        Long id = expenseJdbcRepository.save(expense);
+
+        Optional<Expense> optionalExpense = expenseJdbcRepository.findById(id);
+
+        Assertions.assertThat(optionalExpense).isPresent();
+        Expense saveExpense = optionalExpense.get();
+
+        Assertions.assertThat(saveExpense)
+                .hasFieldOrPropertyWithValue("partyId", expense.getPartyId())
+                .hasFieldOrPropertyWithValue("price", expense.getPrice())
+                .hasFieldOrPropertyWithValue("content", expense.getContent());
     }
 }

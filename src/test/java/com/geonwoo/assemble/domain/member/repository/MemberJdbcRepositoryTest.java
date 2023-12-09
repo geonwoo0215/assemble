@@ -27,14 +27,14 @@ class MemberJdbcRepositoryTest {
 
     @Test
     void save() {
-        Member member = new Member("loginId", "password", "email");
+        Member member = new Member("loginId", "password", "email", "nickname");
         Long id = repository.save(member);
         assertThat(id).isNotNull();
     }
 
     @Test
     void findByLoginId() {
-        Member member = new Member("loginId", "password", "email");
+        Member member = new Member("loginId", "password", "email", "nickname");
         Long id = repository.save(member);
 
         Optional<Member> optionalMember = repository.findByLoginId(member.getLoginId());
@@ -45,6 +45,7 @@ class MemberJdbcRepositoryTest {
                 .hasFieldOrPropertyWithValue("loginId", member.getLoginId())
                 .hasFieldOrPropertyWithValue("password", member.getPassword())
                 .hasFieldOrPropertyWithValue("email", member.getEmail())
+                .hasFieldOrPropertyWithValue("nickname", member.getNickname())
                 .hasFieldOrPropertyWithValue("role", member.getRole());
 
     }

@@ -47,7 +47,7 @@ class PartyControllerTest {
 
     @BeforeEach
     void setUp() {
-        Member member = new Member("loginId", "password", "email");
+        Member member = new Member("loginId", "password", "email", "nickname");
         Long id = memberJdbcRepository.save(member);
         token = jwtTokenProvider.createToken(id, member.getRole());
     }

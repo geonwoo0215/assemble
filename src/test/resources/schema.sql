@@ -10,6 +10,7 @@ create table member
     login_id varchar(20),
     email    varchar(20),
     password varchar(255),
+    nickname varchar(20),
     role     varchar(10)
 );
 
@@ -45,10 +46,10 @@ create table expense
 create table party_member_expense
 (
     id              bigint auto_increment primary key,
-    party_id        bigint  NOT NULL,
+    expense_id      bigint  NOT NULL,
     party_member_id bigint  NOT NULL,
     payer           tinyint NOT NULL,
 
-    FOREIGN KEY (party_id) references party (id),
+    FOREIGN KEY (expense_id) references expense (id),
     FOREIGN KEY (party_member_id) references party_member (id)
 )

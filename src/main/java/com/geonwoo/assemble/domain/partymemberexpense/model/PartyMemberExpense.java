@@ -6,12 +6,12 @@ import lombok.Getter;
 public class PartyMemberExpense {
 
     private Long id;
-    private Long partyId;
+    private Long expenseId;
     private Long partyMemberId;
     private boolean payer;
 
-    public PartyMemberExpense(Long partyId, Long partyMemberId, boolean payer) {
-        this.partyId = partyId;
+    public PartyMemberExpense(Long expenseId, Long partyMemberId, boolean payer) {
+        this.expenseId = expenseId;
         this.partyMemberId = partyMemberId;
         this.payer = payer;
     }

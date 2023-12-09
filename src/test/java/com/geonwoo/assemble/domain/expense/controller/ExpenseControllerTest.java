@@ -2,6 +2,8 @@ package com.geonwoo.assemble.domain.expense.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.geonwoo.assemble.domain.expense.dto.ExpenseSaveDTO;
+import com.geonwoo.assemble.domain.expense.model.Expense;
+import com.geonwoo.assemble.domain.expense.repository.ExpenseJdbcRepository;
 import com.geonwoo.assemble.domain.member.model.Member;
 import com.geonwoo.assemble.domain.member.repository.MemberJdbcRepository;
 import com.geonwoo.assemble.domain.party.model.Party;
@@ -9,6 +11,8 @@ import com.geonwoo.assemble.domain.party.repository.PartyJdbcRepository;
 import com.geonwoo.assemble.domain.partymember.model.PartyMember;
 import com.geonwoo.assemble.domain.partymember.model.PartyMemberRole;
 import com.geonwoo.assemble.domain.partymember.repository.PartyMemberJdbcRepository;
+import com.geonwoo.assemble.domain.partymemberexpense.model.PartyMemberExpense;
+import com.geonwoo.assemble.domain.partymemberexpense.repository.PartyMemberExpenseJdbcRepository;
 import com.geonwoo.assemble.global.auth.jwt.JwtTokenProvider;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,6 +51,12 @@ class ExpenseControllerTest {
     MemberJdbcRepository memberJdbcRepository;
 
     @Autowired
+    ExpenseJdbcRepository expenseJdbcRepository;
+
+    @Autowired
+    PartyMemberExpenseJdbcRepository partyMemberExpenseJdbcRepository;
+
+    @Autowired
     JwtTokenProvider jwtTokenProvider;
 
     String token;
@@ -57,11 +67,11 @@ class ExpenseControllerTest {
 
     @BeforeEach
     void setUp() {
-        Member member1 = new Member("loginId", "password", "email");
+        Member member1 = new Member("loginId", "password", "email", "nickname");
         Long memberId1 = memberJdbcRepository.save(member1);
         token = jwtTokenProvider.createToken(memberId1, member1.getRole());
 
-        Member member2 = new Member("loginId2", "password2", "email2");
+        Member member2 = new Member("loginId2", "password2", "email2", "nickname");
         Long memberId2 = memberJdbcRepository.save(member2);
 
         Party party = new Party("name", "content", LocalDate.now());
@@ -89,6 +99,48 @@ class ExpenseControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.header().string("Location", Matchers.startsWith("/partys/" + partyId + "/expense/")))
                 .andExpect(MockMvcResultMatchers.redirectedUrlPattern("/partys/" + partyId + "/expense/*"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").exists())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @Transactional
+    void findById() throws Exception {
+
+        Expense expense = new Expense(partyId, 1000, "1차 비용");
+
+        Long expenseId = expenseJdbcRepository.save(expense);
+
+        PartyMemberExpense partyMemberExpense1 = new PartyMemberExpense(expenseId, payerPartyMemberId1, true);
+        partyMemberExpenseJdbcRepository.save(partyMemberExpense1);
+
+        PartyMemberExpense partyMemberExpense2 = new PartyMemberExpense(expenseId, partyMemberId2, false);
+        partyMemberExpenseJdbcRepository.save(partyMemberExpense2);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/partys/{partyId}/expense/{expenseId}", partyId, expenseId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").exists())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @Transactional
+    void findAllByPartyId() throws Exception {
+
+        Expense expense = new Expense(partyId, 1000, "1차 비용");
+
+        Long expenseId = expenseJdbcRepository.save(expense);
+
+        PartyMemberExpense partyMemberExpense1 = new PartyMemberExpense(expenseId, payerPartyMemberId1, true);
+        partyMemberExpenseJdbcRepository.save(partyMemberExpense1);
+
+        PartyMemberExpense partyMemberExpense2 = new PartyMemberExpense(expenseId, partyMemberId2, false);
+        partyMemberExpenseJdbcRepository.save(partyMemberExpense2);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/partys/{partyId}/expense", partyId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data").exists())
                 .andDo(MockMvcResultHandlers.print());
     }

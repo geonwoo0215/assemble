@@ -13,12 +13,14 @@ public class Member {
     private String loginId;
     private String password;
     private String email;
+    private String nickname;
     private MemberRole role;
 
-    public Member(String loginId, String password, String email) {
+    public Member(String loginId, String password, String email, String nickname) {
         this.loginId = loginId;
         this.password = password;
         this.email = email;
+        this.nickname = nickname;
         this.role = MemberRole.USER;
     }
 }

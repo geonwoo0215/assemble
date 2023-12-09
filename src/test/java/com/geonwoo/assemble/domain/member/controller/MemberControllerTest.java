@@ -29,7 +29,7 @@ class MemberControllerTest {
     @Transactional
     void signUp() throws Exception {
 
-        MemberSignUpDTO memberSignUpDTO = new MemberSignUpDTO("loginId", "password", "email");
+        MemberSignUpDTO memberSignUpDTO = new MemberSignUpDTO("loginId", "password", "email", "nickname");
         String json = objectMapper.writeValueAsString(memberSignUpDTO);
         mockMvc.perform(MockMvcRequestBuilders.post("/members")
                         .contentType(MediaType.APPLICATION_JSON)

@@ -1,5 +1,7 @@
 package com.geonwoo.assemble.domain.expense.service;
 
+import com.geonwoo.assemble.domain.expense.dto.ExpenseDTO;
+import com.geonwoo.assemble.domain.expense.dto.ExpenseDetailDTO;
 import com.geonwoo.assemble.domain.expense.dto.ExpenseSaveDTO;
 import com.geonwoo.assemble.domain.expense.model.Expense;
 import com.geonwoo.assemble.domain.expense.repository.ExpenseJdbcRepository;
@@ -36,6 +38,27 @@ public class ExpenseService {
         });
 
         return expenseId;
+    }
+
+    public ExpenseDetailDTO findExpenseAndMembersById(Long id) {
+        Expense expense = expenseJdbcRepository.findById(id).orElseThrow(RuntimeException::new);
+        List<String> memberNames = partyMemberExpenseJdbcRepository.findMemberNickNamesByExpenseId(expense.getId());
+
+        Integer restPrice = expense.getPrice() / memberNames.size();
+        Integer payerPrice = restPrice + expense.getPrice() % memberNames.size();
+
+        ExpenseDetailDTO expenseDetailDTO = expense.toExpenseDetailDTO(payerPrice, restPrice, memberNames);
+        return expenseDetailDTO;
+    }
+
+    public List<ExpenseDTO> findAllByPartyId(Long partyId) {
+
+        List<ExpenseDTO> expenseDTOList = expenseJdbcRepository.findAllByPartyId(partyId)
+                .stream()
+                .map(Expense::toExpenseDTO)
+                .toList();
+
+        return expenseDTOList;
     }
 
 
