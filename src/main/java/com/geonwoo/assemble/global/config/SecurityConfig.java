@@ -39,6 +39,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of("http://127.0.0.1:5500"));
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
+        configuration.addExposedHeader("Authorization");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
@@ -62,7 +63,7 @@ public class SecurityConfig {
                         .successHandler((request, response, authentication) -> {
                             PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
                             String token = jwtTokenProvider.createToken(userDetails.getUserId(), userDetails.getMemberRole());
-                            response.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+                            response.addHeader(HttpHeaders.AUTHORIZATION, token);
                         })
                         .failureHandler((request, response, exception) -> {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
