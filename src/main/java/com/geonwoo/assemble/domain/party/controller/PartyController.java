@@ -13,6 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,6 +42,14 @@ public class PartyController {
             ) {
         PartyDTO partyDTO = partyService.findById(id);
         return ResponseEntity.ok(new ApiResponse<>(partyDTO));
+    }
+
+    @GetMapping(value = "/partys", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<PartyDTO>> findByMemberId(
+            @AuthenticationPrincipal Long userId
+    ) {
+        List<PartyDTO> list = partyService.findAllByMemberId(userId);
+        return ResponseEntity.ok(list);
     }
 
     @PatchMapping(value = "/partys/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)

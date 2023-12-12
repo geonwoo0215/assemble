@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PartyService {
@@ -24,10 +26,18 @@ public class PartyService {
 
         Party party = partyCreateDTO.toParty();
         Long id = partyJdbcRepository.save(party);
-        
+
         PartyMember partyMember = new PartyMember(id, userId, PartyMemberRole.LEADER);
         partyMemberJdbcRepository.save(partyMember);
         return id;
+    }
+
+    public List<PartyDTO> findAllByMemberId(Long memberId) {
+        List<PartyDTO> partyDTOList = partyJdbcRepository.findAllByMemberId(memberId)
+                .stream().map(Party::toPartyDTO)
+                .toList();
+
+        return partyDTOList;
     }
 
     public PartyDTO findById(Long id) {
