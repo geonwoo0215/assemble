@@ -52,7 +52,7 @@ public class PartyJdbcRepository {
     public List<Party> findAllByMemberId(Long memberId) {
         String sql = "select p.* from party p" +
                 " join party_member pm on p.id = pm.party_id" +
-                " join member m on pm.member_id = p.id" +
+                " join member m on pm.member_id = m.id" +
                 " where m.id =:memberId";
 
         try {

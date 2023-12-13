@@ -7,6 +7,9 @@ import com.geonwoo.assemble.domain.party.dto.PartySaveDTO;
 import com.geonwoo.assemble.domain.party.dto.PartyUpdateDTO;
 import com.geonwoo.assemble.domain.party.model.Party;
 import com.geonwoo.assemble.domain.party.repository.PartyJdbcRepository;
+import com.geonwoo.assemble.domain.partymember.model.PartyMember;
+import com.geonwoo.assemble.domain.partymember.model.PartyMemberRole;
+import com.geonwoo.assemble.domain.partymember.repository.PartyMemberJdbcRepository;
 import com.geonwoo.assemble.global.auth.jwt.JwtTokenProvider;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,15 +44,20 @@ class PartyControllerTest {
     MemberJdbcRepository memberJdbcRepository;
 
     @Autowired
+    PartyMemberJdbcRepository partyMemberJdbcRepository;
+
+    @Autowired
     JwtTokenProvider jwtTokenProvider;
 
     String token;
 
+    Long memberId;
+
     @BeforeEach
     void setUp() {
         Member member = new Member("loginId", "password", "email", "nickname");
-        Long id = memberJdbcRepository.save(member);
-        token = jwtTokenProvider.createToken(id, member.getRole());
+        memberId = memberJdbcRepository.save(member);
+        token = jwtTokenProvider.createToken(memberId, member.getRole());
     }
 
     @Test
@@ -84,6 +92,23 @@ class PartyControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.name").value(party.getName()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.content").value(party.getContent()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.startDate").value(party.getStartDate().toString()))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @Transactional
+    void findAllByMemberId() throws Exception {
+
+        Party party = new Party("name", "content", LocalDate.now());
+        Long partyId = partyJdbcRepository.save(party);
+        PartyMember partyMember = new PartyMember(partyId, memberId, PartyMemberRole.LEADER);
+        partyMemberJdbcRepository.save(partyMember);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/partys")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").exists())
                 .andDo(MockMvcResultHandlers.print());
     }
 

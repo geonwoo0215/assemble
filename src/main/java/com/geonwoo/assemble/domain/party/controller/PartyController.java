@@ -45,11 +45,11 @@ public class PartyController {
     }
 
     @GetMapping(value = "/partys", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<PartyDTO>> findByMemberId(
+    public ResponseEntity<ApiResponse<List<PartyDTO>>> findAllByMemberId(
             @AuthenticationPrincipal Long userId
     ) {
         List<PartyDTO> list = partyService.findAllByMemberId(userId);
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(new ApiResponse<>(list));
     }
 
     @PatchMapping(value = "/partys/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)

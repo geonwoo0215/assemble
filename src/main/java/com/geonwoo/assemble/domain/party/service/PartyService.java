@@ -34,7 +34,8 @@ public class PartyService {
 
     public List<PartyDTO> findAllByMemberId(Long memberId) {
         List<PartyDTO> partyDTOList = partyJdbcRepository.findAllByMemberId(memberId)
-                .stream().map(Party::toPartyDTO)
+                .stream()
+                .map(Party::toPartyDTO)
                 .toList();
 
         return partyDTOList;
