@@ -80,7 +80,10 @@ class PartyJdbcRepositoryTest {
         PartyMember partyMember = new PartyMember(partyId, memberId, PartyMemberRole.LEADER);
         partyMemberJdbcRepository.save(partyMember);
 
-        List<Party> list = partyJdbcRepository.findAllByMemberId(memberId);
+        int limit = 10;
+        int offset = 0;
+
+        List<Party> list = partyJdbcRepository.findAllByMemberId(memberId, limit, offset);
 
         Assertions.assertThat(list.size()).isEqualTo(1);
 

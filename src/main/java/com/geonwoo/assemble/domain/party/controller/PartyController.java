@@ -46,9 +46,11 @@ public class PartyController {
 
     @GetMapping(value = "/partys", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<List<PartyDTO>>> findAllByMemberId(
-            @AuthenticationPrincipal Long userId
+            @AuthenticationPrincipal Long userId,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size
     ) {
-        List<PartyDTO> list = partyService.findAllByMemberId(userId);
+        List<PartyDTO> list = partyService.findAllByMemberId(userId, size, size * page);
         return ResponseEntity.ok(new ApiResponse<>(list));
     }
 

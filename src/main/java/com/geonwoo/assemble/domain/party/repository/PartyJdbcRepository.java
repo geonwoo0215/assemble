@@ -49,14 +49,20 @@ public class PartyJdbcRepository {
         }
     }
 
-    public List<Party> findAllByMemberId(Long memberId) {
+    public List<Party> findAllByMemberId(Long memberId, int size, int offset) {
         String sql = "select p.* from party p" +
                 " join party_member pm on p.id = pm.party_id" +
                 " join member m on pm.member_id = m.id" +
-                " where m.id =:memberId";
+                " where m.id =:memberId" +
+                " order by p.id desc" +
+                " limit :size" +
+                " offset :offset";
 
         try {
-            Map<String, Long> param = Map.of("memberId", memberId);
+            MapSqlParameterSource param = new MapSqlParameterSource()
+                    .addValue("memberId", memberId)
+                    .addValue("offset", offset)
+                    .addValue("size", size);
             List<Party> list = template.query(sql, param, partyRowMapper());
             return list;
         } catch (DataAccessException e) {
