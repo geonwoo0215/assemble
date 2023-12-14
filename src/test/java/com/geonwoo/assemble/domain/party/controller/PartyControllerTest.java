@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
 
 import java.time.LocalDate;
 
@@ -104,7 +105,13 @@ class PartyControllerTest {
         PartyMember partyMember = new PartyMember(partyId, memberId, PartyMemberRole.LEADER);
         partyMemberJdbcRepository.save(partyMember);
 
+        int page = 0;
+        int size = 10;
+        LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("page", String.valueOf(page));
+        params.add("size", String.valueOf(size));
         mockMvc.perform(MockMvcRequestBuilders.get("/partys")
+                        .params(params)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
