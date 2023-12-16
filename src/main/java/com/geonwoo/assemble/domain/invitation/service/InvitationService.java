@@ -16,10 +16,17 @@ public class InvitationService {
 
 
     @Transactional
-    public Long save(Long userId, Long partyId) {
+    public String save(Long partyId) {
         Invitation invitation = new Invitation(partyId, LocalDateTime.now().plusHours(2L));
-        Long id = invitationJdbcRepository.save(invitation);
-        return id;
+        invitationJdbcRepository.save(invitation);
+        return invitation.getInviteCode();
     }
-    
+
+    public Long validateCode(String inviteCode) {
+        Invitation invitation = invitationJdbcRepository.findByInviteCode(inviteCode)
+                .orElseThrow(RuntimeException::new);
+        invitation.validateInviteCode();
+        return invitation.getPartyId();
+    }
+
 }

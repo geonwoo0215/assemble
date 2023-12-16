@@ -23,4 +23,10 @@ public class Invitation {
     private void createInviteCode(String value) {
         this.inviteCode = Sha256Algorithm.execute(value);
     }
+
+    public void validateInviteCode() {
+        if (expired_date.isBefore(LocalDateTime.now())) {
+            throw new RuntimeException();
+        }
+    }
 }

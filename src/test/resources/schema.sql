@@ -53,3 +53,13 @@ create table party_member_expense
     FOREIGN KEY (expense_id) references expense (id),
     FOREIGN KEY (party_member_id) references party_member (id)
 )
+
+create table invitation
+(
+    id           bigint auto_increment primary key,
+    party_id     bigint NOT NULL,
+    expired_date datetime,
+    invite_code  varchar(255),
+
+    FOREIGN KEY (party_id) references party (id)
+)
