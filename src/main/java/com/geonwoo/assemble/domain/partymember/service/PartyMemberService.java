@@ -1,8 +1,8 @@
 package com.geonwoo.assemble.domain.partymember.service;
 
 import com.geonwoo.assemble.domain.partymember.dto.PartyMemberDTO;
-import com.geonwoo.assemble.domain.partymember.dto.PartyMemberSaveDTO;
 import com.geonwoo.assemble.domain.partymember.model.PartyMember;
+import com.geonwoo.assemble.domain.partymember.model.PartyMemberRole;
 import com.geonwoo.assemble.domain.partymember.repository.PartyMemberJdbcRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,8 +17,8 @@ public class PartyMemberService {
     private final PartyMemberJdbcRepository repository;
 
     @Transactional
-    public Long save(PartyMemberSaveDTO partyMemberSaveDTO) {
-        PartyMember partyMember = partyMemberSaveDTO.toPartyMember();
+    public Long save(Long memberId, Long partyId) {
+        PartyMember partyMember = new PartyMember(partyId, memberId, PartyMemberRole.MEMBER);
         Long id = repository.save(partyMember);
         return id;
     }

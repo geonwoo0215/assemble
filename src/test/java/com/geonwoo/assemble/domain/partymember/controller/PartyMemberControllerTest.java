@@ -5,7 +5,6 @@ import com.geonwoo.assemble.domain.member.model.Member;
 import com.geonwoo.assemble.domain.member.repository.MemberJdbcRepository;
 import com.geonwoo.assemble.domain.party.model.Party;
 import com.geonwoo.assemble.domain.party.repository.PartyJdbcRepository;
-import com.geonwoo.assemble.domain.partymember.dto.PartyMemberSaveDTO;
 import com.geonwoo.assemble.domain.partymember.model.PartyMember;
 import com.geonwoo.assemble.domain.partymember.model.PartyMemberRole;
 import com.geonwoo.assemble.domain.partymember.repository.PartyMemberJdbcRepository;
@@ -70,13 +69,8 @@ class PartyMemberControllerTest {
     @Transactional
     void save() throws Exception {
 
-        PartyMemberSaveDTO partyMemberSaveDTO = new PartyMemberSaveDTO(partyId, memberId, PartyMemberRole.MEMBER);
-        String json = objectMapper.writeValueAsString(partyMemberSaveDTO);
-
         mockMvc.perform(MockMvcRequestBuilders.post("/partys/{partyId}/partyMembers", partyId)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.header().string("Location", Matchers.startsWith("/partys/" + partyId + "/partyMembers")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data").exists())
