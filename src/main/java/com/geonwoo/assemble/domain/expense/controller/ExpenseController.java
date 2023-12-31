@@ -24,9 +24,10 @@ public class ExpenseController {
     public ResponseEntity<ApiResponse<Long>> save
             (
                     @RequestBody ExpenseSaveDTO expenseSaveDTO,
+                    @PathVariable("partyId") Long partyId,
                     HttpServletRequest request
             ) {
-        Long id = expenseService.save(expenseSaveDTO);
+        Long id = expenseService.save(partyId, expenseSaveDTO);
 
         return ResponseEntity
                 .created(URI.create(request.getRequestURI() + "/" + id))

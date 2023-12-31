@@ -1,6 +1,6 @@
 package com.geonwoo.assemble.domain.partymember.controller;
 
-import com.geonwoo.assemble.domain.partymember.dto.PartyMemberDTO;
+import com.geonwoo.assemble.domain.partymember.dto.PartyMemberDTOs;
 import com.geonwoo.assemble.domain.partymember.service.PartyMemberService;
 import com.geonwoo.assemble.global.dto.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,7 +11,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,7 +18,7 @@ public class PartyMemberController {
 
     private final PartyMemberService partyMemberService;
 
-    @PostMapping(value = "/partys/{partyId}/partyMembers", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/partys/{partyId}/partyMembers")
     public ResponseEntity<ApiResponse<Long>> save
             (
                     @PathVariable("partyId") Long partyId,
@@ -35,11 +34,12 @@ public class PartyMemberController {
     }
 
     @GetMapping(value = "/partys/{partyId}/partyMembers", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponse<List<PartyMemberDTO>>> findAllByPartyId(
-            @PathVariable("partyId") Long partyId
+    public ResponseEntity<ApiResponse<PartyMemberDTOs>> findAllByPartyId(
+            @PathVariable("partyId") Long partyId,
+            @AuthenticationPrincipal Long userId
     ) {
-        List<PartyMemberDTO> list = partyMemberService.findAllByPartyId(partyId);
-        return ResponseEntity.ok(new ApiResponse<>(list));
+        PartyMemberDTOs partyMemberDTOs = partyMemberService.findAllByPartyId(userId, partyId);
+        return ResponseEntity.ok(new ApiResponse<>(partyMemberDTOs));
     }
 
     @DeleteMapping(value = "/partys/{partyId}/partyMembers/{id}")

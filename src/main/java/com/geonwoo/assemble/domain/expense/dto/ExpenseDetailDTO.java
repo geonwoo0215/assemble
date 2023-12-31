@@ -8,20 +8,18 @@ import java.util.List;
 public class ExpenseDetailDTO {
 
     private Long id;
-    private Long partyId;
+    private String payerName;
     private Integer price;
     private String content;
-    private Integer payerPrice;
-    private Integer restPrice;
+    private Integer individualPrice;
     private List<String> memberNames;
 
-    public ExpenseDetailDTO(Long id, Long partyId, Integer price, String content, Integer payerPrice, Integer restPrice, List<String> memberNames) {
+    public ExpenseDetailDTO(Long id, String payerName, Integer price, String content, Integer individualPrice, List<String> memberNames) {
         this.id = id;
-        this.partyId = partyId;
+        this.payerName = payerName;
         this.price = price;
         this.content = content;
-        this.payerPrice = payerPrice;
-        this.restPrice = restPrice;
+        this.individualPrice = individualPrice;
         this.memberNames = memberNames;
     }
 }

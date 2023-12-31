@@ -1,3 +1,5 @@
+drop table if exists expense_comment CASCADE;
+drop table if exists invitation CASCADE;
 drop table if exists party_member_expense CASCADE;
 drop table if exists expense CASCADE;
 drop table if exists party_member CASCADE;
@@ -19,7 +21,7 @@ create table party
     id         bigint auto_increment primary key,
     name       varchar(50),
     content    varchar(255),
-    start_date DATE
+    event_date timestamp
 );
 
 create table party_member
@@ -52,14 +54,29 @@ create table party_member_expense
 
     FOREIGN KEY (expense_id) references expense (id),
     FOREIGN KEY (party_member_id) references party_member (id)
-)
+);
 
 create table invitation
 (
     id           bigint auto_increment primary key,
     party_id     bigint NOT NULL,
-    expired_date datetime,
+    expired_date timestamp,
     invite_code  varchar(255),
 
     FOREIGN KEY (party_id) references party (id)
+);
+
+create table expense_comment
+(
+    id              bigint auto_increment primary key,
+    expense_id      bigint NOT NULL,
+    party_member_id bigint NOT NULL,
+    comment         varchar(255),
+    group_no        bigint NOT NULL,
+    depth           bigint NOT NULL,
+    comment_order   bigint NOT NULL,
+    parent_id       bigint DEFAULT 0,
+
+    FOREIGN KEY (expense_id) references expense (id),
+    FOREIGN KEY (party_member_id) references party_member (id)
 )

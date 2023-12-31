@@ -24,11 +24,11 @@ public class PartyController {
     @PostMapping(value = "/partys", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<Long>> save
             (
-                    @RequestBody PartySaveDTO partyCreateDTO,
+                    @RequestBody PartySaveDTO partySaveDTO,
                     @AuthenticationPrincipal Long userId,
                     HttpServletRequest request
             ) {
-        Long id = partyService.save(userId, partyCreateDTO);
+        Long id = partyService.save(userId, partySaveDTO);
         return ResponseEntity
                 .created(URI.create(request.getRequestURI() + "/" + id))
                 .body(new ApiResponse<>(id));

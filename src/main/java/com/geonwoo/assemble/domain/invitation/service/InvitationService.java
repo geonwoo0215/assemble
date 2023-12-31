@@ -17,15 +17,21 @@ public class InvitationService {
 
     @Transactional
     public String save(Long partyId) {
-        Invitation invitation = new Invitation(partyId, LocalDateTime.now().plusHours(2L));
-        invitationJdbcRepository.save(invitation);
-        return invitation.getInviteCode();
+
+        return invitationJdbcRepository.findByPartyId(partyId)
+                .filter(invitation -> !invitation.isExpired())
+                .map(Invitation::getInviteCode)
+                .orElseGet(() -> {
+                    Invitation newInvitation = new Invitation(partyId, LocalDateTime.now().plusHours(2L));
+                    invitationJdbcRepository.save(newInvitation);
+                    return newInvitation.getInviteCode();
+                });
     }
 
     public Long validateCode(String inviteCode) {
         Invitation invitation = invitationJdbcRepository.findByInviteCode(inviteCode)
                 .orElseThrow(RuntimeException::new);
-        invitation.validateInviteCode();
+        invitation.validateExpiredDate();
         return invitation.getPartyId();
     }
 

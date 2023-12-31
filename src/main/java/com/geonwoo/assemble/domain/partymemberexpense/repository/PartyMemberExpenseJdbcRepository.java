@@ -1,5 +1,6 @@
 package com.geonwoo.assemble.domain.partymemberexpense.repository;
 
+import com.geonwoo.assemble.domain.partymemberexpense.dto.PartyMemberExpenseDTO;
 import com.geonwoo.assemble.domain.partymemberexpense.model.PartyMemberExpense;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -33,16 +34,16 @@ public class PartyMemberExpenseJdbcRepository {
         return key.longValue();
     }
 
-    public List<String> findMemberNickNamesByExpenseId(Long expenseId) {
+    public List<PartyMemberExpenseDTO> findByExpenseId(Long expenseId) {
 
-        String sql = "select m.nickname from party_member_expense pme" +
+        String sql = "select pme.payer, m.nickname from party_member_expense pme" +
                 " join party_member pm on pm.id = pme.party_member_id" +
                 " join member m on m.id=pm.member_id" +
                 " where pme.expense_id=:expenseId";
 
         try {
             Map<String, Long> param = Map.of("expenseId", expenseId);
-            List<String> list = template.query(sql, param, memberNameRowMapper());
+            List<PartyMemberExpenseDTO> list = template.query(sql, param, memberNameRowMapper());
             return list;
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
@@ -53,8 +54,8 @@ public class PartyMemberExpenseJdbcRepository {
         return BeanPropertyRowMapper.newInstance(PartyMemberExpense.class);
     }
 
-    private RowMapper<String> memberNameRowMapper() {
-        return (rs, rowNum) -> rs.getString("nickname");
+    private RowMapper<PartyMemberExpenseDTO> memberNameRowMapper() {
+        return BeanPropertyRowMapper.newInstance(PartyMemberExpenseDTO.class);
     }
 
 }

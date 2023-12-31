@@ -22,9 +22,9 @@ public class PartyService {
     private final PartyMemberJdbcRepository partyMemberJdbcRepository;
 
     @Transactional
-    public Long save(Long userId, PartySaveDTO partyCreateDTO) {
+    public Long save(Long userId, PartySaveDTO partySaveDTO) {
 
-        Party party = partyCreateDTO.toParty();
+        Party party = partySaveDTO.toParty();
         Long id = partyJdbcRepository.save(party);
 
         PartyMember partyMember = new PartyMember(id, userId, PartyMemberRole.LEADER);

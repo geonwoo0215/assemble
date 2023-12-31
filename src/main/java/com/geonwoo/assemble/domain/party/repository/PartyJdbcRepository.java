@@ -72,13 +72,13 @@ public class PartyJdbcRepository {
     }
 
     public void update(Long id, PartyUpdateDTO partyUpdateDTO) {
-        String sql = "update party set name=:name, content=:content, start_date=:startDate where id=:id";
+        String sql = "update party set name=:name, content=:content, event_date=:eventDate where id=:id";
 
         try {
             SqlParameterSource param = new MapSqlParameterSource()
                     .addValue("name", partyUpdateDTO.getName())
                     .addValue("content", partyUpdateDTO.getContent())
-                    .addValue("startDate", partyUpdateDTO.getStartDate())
+                    .addValue("eventDate", partyUpdateDTO.getEventDate())
                     .addValue("id", id);
             template.update(sql, param);
         } catch (DataAccessException e) {
@@ -91,6 +91,19 @@ public class PartyJdbcRepository {
         try {
             Map<String, Long> param = Map.of("id", id);
             template.update(sql, param);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Party> searchByDate(String startDate, String endDate) {
+        String sql = "SELECT * FROM party p WHERE p.event_date >= :startDate AND p.event_date <= :endDate";
+        try {
+            MapSqlParameterSource param = new MapSqlParameterSource()
+                    .addValue("startDate", startDate)
+                    .addValue("endDate", endDate);
+            List<Party> list = template.query(sql, param, partyRowMapper());
+            return list;
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }

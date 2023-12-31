@@ -92,7 +92,7 @@ class PartyControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.id").value(id))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.name").value(party.getName()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.content").value(party.getContent()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.startDate").value(party.getStartDate().toString()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.eventDate").value(party.getEventDate().toString()))
                 .andDo(MockMvcResultHandlers.print());
     }
 

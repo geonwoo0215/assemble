@@ -67,7 +67,7 @@ class PartyJdbcRepositoryTest {
                 .hasFieldOrPropertyWithValue("id", id)
                 .hasFieldOrPropertyWithValue("name", party.getName())
                 .hasFieldOrPropertyWithValue("content", party.getContent())
-                .hasFieldOrPropertyWithValue("startDate", party.getStartDate());
+                .hasFieldOrPropertyWithValue("eventDate", party.getEventDate());
 
     }
 
@@ -104,7 +104,7 @@ class PartyJdbcRepositoryTest {
                 .hasFieldOrPropertyWithValue("id", id)
                 .hasFieldOrPropertyWithValue("name", partyUpdateDTO.getName())
                 .hasFieldOrPropertyWithValue("content", partyUpdateDTO.getContent())
-                .hasFieldOrPropertyWithValue("startDate", partyUpdateDTO.getStartDate());
+                .hasFieldOrPropertyWithValue("eventDate", partyUpdateDTO.getEventDate());
     }
 
     @Test

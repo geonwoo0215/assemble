@@ -45,6 +45,18 @@ public class InvitationJdbcRepository {
         }
     }
 
+    public Optional<Invitation> findByPartyId(Long partyId) {
+        String sql = "select * from invitation where party_id =:partyId";
+
+        try {
+            Map<String, Long> param = Map.of("partyId", partyId);
+            Invitation invitation = template.queryForObject(sql, param, invitationRowMapper());
+            return Optional.of(invitation);
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
     private RowMapper<Invitation> invitationRowMapper() {
         return BeanPropertyRowMapper.newInstance(Invitation.class);
     }

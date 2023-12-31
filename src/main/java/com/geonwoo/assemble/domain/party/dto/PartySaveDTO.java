@@ -10,15 +10,15 @@ public class PartySaveDTO {
 
     private String name;
     private String content;
-    private LocalDate startDate;
+    private LocalDate eventDate;
 
-    public PartySaveDTO(String name, String content, LocalDate startDate) {
+    public PartySaveDTO(String name, String content, LocalDate eventDate) {
         this.name = name;
         this.content = content;
-        this.startDate = startDate;
+        this.eventDate = eventDate;
     }
 
     public Party toParty() {
-        return new Party(name, content, startDate);
+        return new Party(name, content, eventDate);
     }
 }

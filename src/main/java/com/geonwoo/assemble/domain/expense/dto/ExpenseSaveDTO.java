@@ -8,21 +8,19 @@ import java.util.List;
 @Getter
 public class ExpenseSaveDTO {
 
-    private Long partyId;
     private Long payerPartyMemberId;
     private Integer price;
     private String content;
     private List<Long> partyMemberIds;
 
-    public ExpenseSaveDTO(Long partyId, Long payerPartyMemberId, Integer price, String content, List<Long> partyMemberIds) {
-        this.partyId = partyId;
+    public ExpenseSaveDTO(Long payerPartyMemberId, Integer price, String content, List<Long> partyMemberIds) {
         this.payerPartyMemberId = payerPartyMemberId;
         this.price = price;
         this.content = content;
         this.partyMemberIds = partyMemberIds;
     }
 
-    public Expense toExpense() {
+    public Expense toExpense(Long partyId) {
         return new Expense(partyId, price, content);
     }
 }

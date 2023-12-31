@@ -15,15 +15,15 @@ public class Party {
     private Long id;
     private String name;
     private String content;
-    private LocalDate startDate;
+    private LocalDate eventDate;
 
-    public Party(String name, String content, LocalDate startDate) {
+    public Party(String name, String content, LocalDate eventDate) {
         this.name = name;
         this.content = content;
-        this.startDate = startDate;
+        this.eventDate = eventDate;
     }
 
     public PartyDTO toPartyDTO() {
-        return new PartyDTO(id, name, content, startDate);
+        return new PartyDTO(id, name, content, eventDate);
     }
 }

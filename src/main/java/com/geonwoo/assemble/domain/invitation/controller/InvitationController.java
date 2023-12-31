@@ -4,6 +4,7 @@ import com.geonwoo.assemble.domain.invitation.service.InvitationService;
 import com.geonwoo.assemble.global.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,7 +26,7 @@ public class InvitationController {
         return new ResponseEntity<>(new ApiResponse<>(inviteCode), HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "/{inviteCode}")
+    @GetMapping(value = "/invite/{inviteCode}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<Long>> validateInviteCode
             (
                     @PathVariable("inviteCode") String inviteCode

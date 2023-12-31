@@ -5,6 +5,7 @@ import com.geonwoo.assemble.domain.expense.dto.ExpenseDetailDTO;
 import com.geonwoo.assemble.domain.expense.dto.ExpenseSaveDTO;
 import com.geonwoo.assemble.domain.expense.model.Expense;
 import com.geonwoo.assemble.domain.expense.repository.ExpenseJdbcRepository;
+import com.geonwoo.assemble.domain.partymemberexpense.dto.PartyMemberExpenseDTO;
 import com.geonwoo.assemble.domain.partymemberexpense.model.PartyMemberExpense;
 import com.geonwoo.assemble.domain.partymemberexpense.repository.PartyMemberExpenseJdbcRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,12 +23,11 @@ public class ExpenseService {
     private final PartyMemberExpenseJdbcRepository partyMemberExpenseJdbcRepository;
 
     @Transactional
-    public Long save(ExpenseSaveDTO expenseSaveDTO) {
+    public Long save(Long partyId, ExpenseSaveDTO expenseSaveDTO) {
 
-        Long partyId = expenseSaveDTO.getPartyId();
         Long payerPartyMemberId = expenseSaveDTO.getPayerPartyMemberId();
         List<Long> partyMemberIds = expenseSaveDTO.getPartyMemberIds();
-        Expense expense = expenseSaveDTO.toExpense();
+        Expense expense = expenseSaveDTO.toExpense(partyId);
         Long expenseId = expenseJdbcRepository.save(expense);
 
         PartyMemberExpense payer = new PartyMemberExpense(partyId, payerPartyMemberId, true);
@@ -42,12 +43,21 @@ public class ExpenseService {
 
     public ExpenseDetailDTO findExpenseAndMembersById(Long id) {
         Expense expense = expenseJdbcRepository.findById(id).orElseThrow(RuntimeException::new);
-        List<String> memberNames = partyMemberExpenseJdbcRepository.findMemberNickNamesByExpenseId(expense.getId());
+        List<PartyMemberExpenseDTO> memberExpenseDTOList = partyMemberExpenseJdbcRepository.findByExpenseId(expense.getId());
 
-        Integer restPrice = expense.getPrice() / memberNames.size();
-        Integer payerPrice = restPrice + expense.getPrice() % memberNames.size();
+        String payerNickname = memberExpenseDTOList.stream()
+                .filter(PartyMemberExpenseDTO::isPayer)
+                .findFirst()
+                .map(PartyMemberExpenseDTO::getNickname)
+                .orElseThrow(RuntimeException::new);
+        List<String> memberNames = memberExpenseDTOList.stream()
+                .filter(partyMemberExpenseDTO -> !partyMemberExpenseDTO.isPayer())
+                .map(PartyMemberExpenseDTO::getNickname)
+                .collect(Collectors.toList());
 
-        ExpenseDetailDTO expenseDetailDTO = expense.toExpenseDetailDTO(payerPrice, restPrice, memberNames);
+        Integer individualPrice = expense.getPrice() / memberExpenseDTOList.size();
+
+        ExpenseDetailDTO expenseDetailDTO = expense.toExpenseDetailDTO(individualPrice, payerNickname, memberNames);
         return expenseDetailDTO;
     }
 

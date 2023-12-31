@@ -10,13 +10,13 @@ public class PartyDTO {
     private Long id;
     private String name;
     private String content;
-    private LocalDate startDate;
+    private LocalDate eventDate;
 
-    public PartyDTO(Long id, String name, String content, LocalDate startDate) {
+    public PartyDTO(Long id, String name, String content, LocalDate eventDate) {
         this.id = id;
         this.name = name;
         this.content = content;
-        this.startDate = startDate;
+        this.eventDate = eventDate;
     }
 
 }
