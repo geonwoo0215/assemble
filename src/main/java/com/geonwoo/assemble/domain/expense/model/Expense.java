@@ -24,8 +24,8 @@ public class Expense {
         this.content = content;
     }
 
-    public ExpenseDetailDTO toExpenseDetailDTO(Integer individualPrice, String payerName, List<String> memberNames) {
-        return new ExpenseDetailDTO(id, payerName, price, content, individualPrice, memberNames);
+    public ExpenseDetailDTO toExpenseDetailDTO(Integer individualPrice, String payerName, List<String> memberNames, List<String> imageUrls) {
+        return new ExpenseDetailDTO(id, payerName, price, content, individualPrice, memberNames, imageUrls);
     }
 
     public ExpenseDTO toExpenseDTO() {

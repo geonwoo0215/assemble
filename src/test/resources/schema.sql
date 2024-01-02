@@ -1,3 +1,4 @@
+drop table if exists image_url CASCADE;
 drop table if exists expense_comment CASCADE;
 drop table if exists invitation CASCADE;
 drop table if exists party_member_expense CASCADE;
@@ -79,4 +80,15 @@ create table expense_comment
 
     FOREIGN KEY (expense_id) references expense (id),
     FOREIGN KEY (party_member_id) references party_member (id)
+);
+
+create table image_url
+(
+    id         bigint auto_increment primary key,
+    expense_id bigint,
+    party_id   bigint NOT NULL,
+    img_url    varchar(255),
+
+    FOREIGN KEY (expense_id) references expense (id),
+    FOREIGN KEY (party_id) references party (id)
 )

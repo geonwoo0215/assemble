@@ -1,6 +1,8 @@
 package com.geonwoo.assemble.domain.party.service;
 
+import com.geonwoo.assemble.domain.imageurl.repository.ImageUrlRepository;
 import com.geonwoo.assemble.domain.party.dto.PartyDTO;
+import com.geonwoo.assemble.domain.party.dto.PartyDetailDTO;
 import com.geonwoo.assemble.domain.party.dto.PartySaveDTO;
 import com.geonwoo.assemble.domain.party.dto.PartyUpdateDTO;
 import com.geonwoo.assemble.domain.party.model.Party;
@@ -20,6 +22,7 @@ public class PartyService {
 
     private final PartyJdbcRepository partyJdbcRepository;
     private final PartyMemberJdbcRepository partyMemberJdbcRepository;
+    private final ImageUrlRepository imageUrlRepository;
 
     @Transactional
     public Long save(Long userId, PartySaveDTO partySaveDTO) {
@@ -41,13 +44,15 @@ public class PartyService {
         return partyDTOList;
     }
 
-    public PartyDTO findById(Long id) {
+    public PartyDetailDTO findById(Long id) {
 
-        PartyDTO partyDTO = partyJdbcRepository.findById(id)
-                .map(Party::toPartyDTO)
+        List<String> imageUrls = imageUrlRepository.findByPartyId(id);
+
+        PartyDetailDTO partyDetailDTO = partyJdbcRepository.findById(id)
+                .map(a -> a.toPartyDetailDTO(imageUrls))
                 .orElseThrow(RuntimeException::new);
 
-        return partyDTO;
+        return partyDetailDTO;
     }
 
     @Transactional

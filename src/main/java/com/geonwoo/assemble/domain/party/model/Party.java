@@ -1,11 +1,13 @@
 package com.geonwoo.assemble.domain.party.model;
 
 import com.geonwoo.assemble.domain.party.dto.PartyDTO;
+import com.geonwoo.assemble.domain.party.dto.PartyDetailDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -25,5 +27,9 @@ public class Party {
 
     public PartyDTO toPartyDTO() {
         return new PartyDTO(id, name, content, eventDate);
+    }
+
+    public PartyDetailDTO toPartyDetailDTO(List<String> imageUrls) {
+        return new PartyDetailDTO(id, name, content, eventDate, imageUrls);
     }
 }

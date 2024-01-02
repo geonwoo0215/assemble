@@ -5,6 +5,8 @@ import com.geonwoo.assemble.domain.expense.dto.ExpenseDetailDTO;
 import com.geonwoo.assemble.domain.expense.dto.ExpenseSaveDTO;
 import com.geonwoo.assemble.domain.expense.model.Expense;
 import com.geonwoo.assemble.domain.expense.repository.ExpenseJdbcRepository;
+import com.geonwoo.assemble.domain.imageurl.model.ImageUrl;
+import com.geonwoo.assemble.domain.imageurl.repository.ImageUrlRepository;
 import com.geonwoo.assemble.domain.partymemberexpense.dto.PartyMemberExpenseDTO;
 import com.geonwoo.assemble.domain.partymemberexpense.model.PartyMemberExpense;
 import com.geonwoo.assemble.domain.partymemberexpense.repository.PartyMemberExpenseJdbcRepository;
@@ -21,6 +23,7 @@ public class ExpenseService {
 
     private final ExpenseJdbcRepository expenseJdbcRepository;
     private final PartyMemberExpenseJdbcRepository partyMemberExpenseJdbcRepository;
+    private final ImageUrlRepository imageUrlRepository;
 
     @Transactional
     public Long save(Long partyId, ExpenseSaveDTO expenseSaveDTO) {
@@ -30,12 +33,17 @@ public class ExpenseService {
         Expense expense = expenseSaveDTO.toExpense(partyId);
         Long expenseId = expenseJdbcRepository.save(expense);
 
-        PartyMemberExpense payer = new PartyMemberExpense(partyId, payerPartyMemberId, true);
+        PartyMemberExpense payer = new PartyMemberExpense(expenseId, payerPartyMemberId, true);
         partyMemberExpenseJdbcRepository.save(payer);
 
         partyMemberIds.forEach(partyMemberId -> {
-            PartyMemberExpense nonPayer = new PartyMemberExpense(partyId, partyMemberId, false);
+            PartyMemberExpense nonPayer = new PartyMemberExpense(expenseId, partyMemberId, false);
             partyMemberExpenseJdbcRepository.save(nonPayer);
+        });
+
+        expenseSaveDTO.getImageUrls().forEach(url -> {
+            ImageUrl imageUrl = new ImageUrl(partyId, expenseId, url);
+            imageUrlRepository.save(imageUrl);
         });
 
         return expenseId;
@@ -57,7 +65,9 @@ public class ExpenseService {
 
         Integer individualPrice = expense.getPrice() / memberExpenseDTOList.size();
 
-        ExpenseDetailDTO expenseDetailDTO = expense.toExpenseDetailDTO(individualPrice, payerNickname, memberNames);
+        List<String> imageUrls = imageUrlRepository.findByExpenseId(expense.getId());
+
+        ExpenseDetailDTO expenseDetailDTO = expense.toExpenseDetailDTO(individualPrice, payerNickname, memberNames, imageUrls);
         return expenseDetailDTO;
     }
 

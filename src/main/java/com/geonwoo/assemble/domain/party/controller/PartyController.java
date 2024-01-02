@@ -1,6 +1,7 @@
 package com.geonwoo.assemble.domain.party.controller;
 
 import com.geonwoo.assemble.domain.party.dto.PartyDTO;
+import com.geonwoo.assemble.domain.party.dto.PartyDetailDTO;
 import com.geonwoo.assemble.domain.party.dto.PartySaveDTO;
 import com.geonwoo.assemble.domain.party.dto.PartyUpdateDTO;
 import com.geonwoo.assemble.domain.party.service.PartyService;
@@ -36,12 +37,12 @@ public class PartyController {
     }
 
     @GetMapping(value = "/partys/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponse<PartyDTO>> findById
+    public ResponseEntity<ApiResponse<PartyDetailDTO>> findById
             (
                     @PathVariable("id") Long id
             ) {
-        PartyDTO partyDTO = partyService.findById(id);
-        return ResponseEntity.ok(new ApiResponse<>(partyDTO));
+        PartyDetailDTO partyDetailDTO = partyService.findById(id);
+        return ResponseEntity.ok(new ApiResponse<>(partyDetailDTO));
     }
 
     @GetMapping(value = "/partys", produces = MediaType.APPLICATION_JSON_VALUE)
