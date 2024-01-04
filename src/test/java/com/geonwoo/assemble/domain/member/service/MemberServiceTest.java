@@ -3,6 +3,8 @@ package com.geonwoo.assemble.domain.member.service;
 import com.geonwoo.assemble.domain.member.dto.MemberSignUpDTO;
 import com.geonwoo.assemble.domain.member.model.Member;
 import com.geonwoo.assemble.domain.member.repository.MemberJdbcRepository;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class MemberServiceTest {
 
     @Mock
@@ -25,7 +28,7 @@ class MemberServiceTest {
     private MemberService memberService;
 
     @Test
-    void signUp() {
+    void 사용자_저장_성공() {
 
         MemberSignUpDTO memberSignUpDTO = new MemberSignUpDTO("loginId", "password", "email", "nickname");
 

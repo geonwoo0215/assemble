@@ -47,7 +47,7 @@ public class ExpenseController {
     @GetMapping(value = "/partys/{partyId}/expense", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<List<ExpenseDTO>>> findAllByPartyId
             (
-                    @PathVariable Long partyId
+                    @PathVariable("partyId") Long partyId
             ) {
         List<ExpenseDTO> expenseDTOList = expenseService.findAllByPartyId(partyId);
 

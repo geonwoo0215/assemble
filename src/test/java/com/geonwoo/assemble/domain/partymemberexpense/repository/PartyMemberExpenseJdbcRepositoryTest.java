@@ -9,9 +9,12 @@ import com.geonwoo.assemble.domain.party.repository.PartyJdbcRepository;
 import com.geonwoo.assemble.domain.partymember.model.PartyMember;
 import com.geonwoo.assemble.domain.partymember.model.PartyMemberRole;
 import com.geonwoo.assemble.domain.partymember.repository.PartyMemberJdbcRepository;
+import com.geonwoo.assemble.domain.partymemberexpense.dto.PartyMemberExpenseDTO;
 import com.geonwoo.assemble.domain.partymemberexpense.model.PartyMemberExpense;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -19,9 +22,11 @@ import org.springframework.test.context.jdbc.Sql;
 
 import javax.sql.DataSource;
 import java.time.LocalDate;
+import java.util.List;
 
 @JdbcTest
 @Sql("classpath:schema.sql")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class PartyMemberExpenseJdbcRepositoryTest {
 
     MemberJdbcRepository memberJdbcRepository;
@@ -60,11 +65,20 @@ class PartyMemberExpenseJdbcRepositoryTest {
     }
 
     @Test
-    void save() {
-
+    void 정산인원_저장_성공() {
         PartyMemberExpense partyMemberExpense = new PartyMemberExpense(expenseId, partyMemberId, true);
         Long id = partyMemberExpenseJdbcRepository.save(partyMemberExpense);
         Assertions.assertThat(id).isNotNull();
+    }
+
+    @Test
+    void 비용아이디로_정산인원_조회_성공() {
+
+        PartyMemberExpense partyMemberExpense = new PartyMemberExpense(expenseId, partyMemberId, true);
+        partyMemberExpenseJdbcRepository.save(partyMemberExpense);
+
+        List<PartyMemberExpenseDTO> partyMemberExpenseDTOList = partyMemberExpenseJdbcRepository.findByExpenseId(expenseId);
+        Assertions.assertThat(partyMemberExpenseDTOList).hasSize(1);
     }
 
 }

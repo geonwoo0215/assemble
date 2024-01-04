@@ -26,14 +26,14 @@ class MemberJdbcRepositoryTest {
     }
 
     @Test
-    void save() {
+    void 사용자_저장_성공() {
         Member member = new Member("loginId", "password", "email", "nickname");
         Long id = repository.save(member);
         assertThat(id).isNotNull();
     }
 
     @Test
-    void findByLoginId() {
+    void 사용자아이디로_조회_성공() {
         Member member = new Member("loginId", "password", "email", "nickname");
         Long id = repository.save(member);
 

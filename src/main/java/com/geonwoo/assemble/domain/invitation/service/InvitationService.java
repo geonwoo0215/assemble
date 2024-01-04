@@ -14,7 +14,6 @@ public class InvitationService {
 
     private final InvitationJdbcRepository invitationJdbcRepository;
 
-
     @Transactional
     public String save(Long partyId) {
 

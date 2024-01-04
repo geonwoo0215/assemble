@@ -29,9 +29,9 @@ public class ExpenseCommentService {
                     expenseCommentSaveDTO.getPartyMemberId(),
                     expenseCommentSaveDTO.getComment(),
                     maxGroupNo + 1,
-                    0l,
-                    0l,
-                    0l);
+                    0L,
+                    0L,
+                    0L);
 
             id = expenseCommentJdbcRepository.save(expenseComment);
         } else {

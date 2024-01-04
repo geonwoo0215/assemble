@@ -1,6 +1,6 @@
 package com.geonwoo.assemble.domain.party.service;
 
-import com.geonwoo.assemble.domain.imageurl.repository.ImageUrlRepository;
+import com.geonwoo.assemble.domain.imageurl.repository.ImageUrlJdbcRepository;
 import com.geonwoo.assemble.domain.party.dto.PartyDTO;
 import com.geonwoo.assemble.domain.party.dto.PartyDetailDTO;
 import com.geonwoo.assemble.domain.party.dto.PartySaveDTO;
@@ -22,7 +22,7 @@ public class PartyService {
 
     private final PartyJdbcRepository partyJdbcRepository;
     private final PartyMemberJdbcRepository partyMemberJdbcRepository;
-    private final ImageUrlRepository imageUrlRepository;
+    private final ImageUrlJdbcRepository imageUrlJdbcRepository;
 
     @Transactional
     public Long save(Long userId, PartySaveDTO partySaveDTO) {
@@ -46,7 +46,7 @@ public class PartyService {
 
     public PartyDetailDTO findById(Long id) {
 
-        List<String> imageUrls = imageUrlRepository.findByPartyId(id);
+        List<String> imageUrls = imageUrlJdbcRepository.findByPartyId(id);
 
         PartyDetailDTO partyDetailDTO = partyJdbcRepository.findById(id)
                 .map(a -> a.toPartyDetailDTO(imageUrls))

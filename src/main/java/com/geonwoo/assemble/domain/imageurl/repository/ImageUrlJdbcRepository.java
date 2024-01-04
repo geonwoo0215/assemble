@@ -12,13 +12,13 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class ImageUrlRepository {
+public class ImageUrlJdbcRepository {
 
     private final NamedParameterJdbcTemplate template;
 
     private final SimpleJdbcInsert insert;
 
-    public ImageUrlRepository(DataSource dataSource) {
+    public ImageUrlJdbcRepository(DataSource dataSource) {
         this.template = new NamedParameterJdbcTemplate(dataSource);
         this.insert = new SimpleJdbcInsert(dataSource)
                 .withTableName("image_url")

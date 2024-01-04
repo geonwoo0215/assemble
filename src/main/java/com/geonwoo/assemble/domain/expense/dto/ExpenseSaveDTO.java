@@ -2,10 +2,12 @@ package com.geonwoo.assemble.domain.expense.dto;
 
 import com.geonwoo.assemble.domain.expense.model.Expense;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Getter
+@NoArgsConstructor
 public class ExpenseSaveDTO {
 
     private Long payerPartyMemberId;

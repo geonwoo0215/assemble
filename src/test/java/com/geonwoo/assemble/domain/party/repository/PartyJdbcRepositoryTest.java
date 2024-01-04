@@ -9,6 +9,8 @@ import com.geonwoo.assemble.domain.partymember.model.PartyMemberRole;
 import com.geonwoo.assemble.domain.partymember.repository.PartyMemberJdbcRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -21,6 +23,7 @@ import java.util.Optional;
 
 @JdbcTest
 @Sql("classpath:schema.sql")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class PartyJdbcRepositoryTest {
 
     @Autowired
@@ -34,9 +37,6 @@ class PartyJdbcRepositoryTest {
 
     Long memberId;
 
-    Long partyId;
-    Long partyMemberId;
-
     @BeforeEach
     void setUp() {
         partyJdbcRepository = new PartyJdbcRepository(dataSource);
@@ -45,18 +45,17 @@ class PartyJdbcRepositoryTest {
 
         Member member = new Member("loginId", "password", "email", "nickname");
         memberId = memberJdbcRepository.save(member);
-
     }
 
     @Test
-    void save() {
+    void 모임_저장_성공() {
         Party party = new Party("name", "content", LocalDate.now());
         Long id = partyJdbcRepository.save(party);
         Assertions.assertThat(id).isNotNull();
     }
 
     @Test
-    void findById() {
+    void 모임_아이디로_조회_성공() {
         Party party = new Party("name", "content", LocalDate.now());
         Long id = partyJdbcRepository.save(party);
 
@@ -72,7 +71,7 @@ class PartyJdbcRepositoryTest {
     }
 
     @Test
-    void findAllByMemberId() {
+    void 사용자_아이디로_모임_조회_성공() {
 
         Party party = new Party("name", "content", LocalDate.now());
         Long partyId = partyJdbcRepository.save(party);
@@ -86,11 +85,10 @@ class PartyJdbcRepositoryTest {
         List<Party> list = partyJdbcRepository.findAllByMemberId(memberId, limit, offset);
 
         Assertions.assertThat(list.size()).isEqualTo(1);
-
     }
 
     @Test
-    void update() {
+    void 모임_수정_성공() {
         Party party = new Party("name", "content", LocalDate.now());
         Long id = partyJdbcRepository.save(party);
 
@@ -108,7 +106,7 @@ class PartyJdbcRepositoryTest {
     }
 
     @Test
-    void delete() {
+    void 모임_삭제_성공() {
         Party party = new Party("name", "content", LocalDate.now());
         Long id = partyJdbcRepository.save(party);
         partyJdbcRepository.delete(id);

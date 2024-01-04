@@ -11,12 +11,16 @@ import com.geonwoo.assemble.domain.partymember.model.PartyMember;
 import com.geonwoo.assemble.domain.partymember.model.PartyMemberRole;
 import com.geonwoo.assemble.domain.partymember.repository.PartyMemberJdbcRepository;
 import com.geonwoo.assemble.global.auth.jwt.JwtTokenProvider;
+import com.geonwoo.assemble.global.aws.s3.service.S3Service;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,11 +29,13 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
+import software.amazon.awssdk.services.s3.S3Client;
 
 import java.time.LocalDate;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class PartyControllerTest {
 
     @Autowired
@@ -50,6 +56,12 @@ class PartyControllerTest {
     @Autowired
     JwtTokenProvider jwtTokenProvider;
 
+    @MockBean
+    S3Client s3Client;
+
+    @MockBean
+    S3Service s3Service;
+
     String token;
 
     Long memberId;
@@ -63,7 +75,7 @@ class PartyControllerTest {
 
     @Test
     @Transactional
-    void save() throws Exception {
+    void 모임_저장_API_성공() throws Exception {
 
         PartySaveDTO partyCreateDTO = new PartySaveDTO("name", "content", LocalDate.now());
         String json = objectMapper.writeValueAsString(partyCreateDTO);
@@ -80,7 +92,7 @@ class PartyControllerTest {
 
     @Test
     @Transactional
-    void findById() throws Exception {
+    void 모임아이디로_모임_조회_API_성공() throws Exception {
 
         Party party = new Party("name", "content", LocalDate.now());
         Long id = partyJdbcRepository.save(party);
@@ -98,7 +110,7 @@ class PartyControllerTest {
 
     @Test
     @Transactional
-    void findAllByMemberId() throws Exception {
+    void 사용자아이디로_사용자가포함된모임전체_조회_API_성공() throws Exception {
 
         Party party = new Party("name", "content", LocalDate.now());
         Long partyId = partyJdbcRepository.save(party);
@@ -121,7 +133,7 @@ class PartyControllerTest {
 
     @Test
     @Transactional
-    void update() throws Exception {
+    void 모임_수정_API_성공() throws Exception {
 
         Party party = new Party("name", "content", LocalDate.now());
         Long id = partyJdbcRepository.save(party);
@@ -139,7 +151,7 @@ class PartyControllerTest {
 
     @Test
     @Transactional
-    void delete() throws Exception {
+    void 모임_삭제_API_성공() throws Exception {
 
         Party party = new Party("name", "content", LocalDate.now());
         Long id = partyJdbcRepository.save(party);

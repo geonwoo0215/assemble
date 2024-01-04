@@ -1,6 +1,5 @@
 package com.geonwoo.assemble.domain.member.dto;
 
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -11,7 +10,6 @@ public class MemberDTO {
     private String password;
     private String email;
 
-    @Builder
     public MemberDTO(Long id, String loginId, String password, String email) {
         this.id = id;
         this.loginId = loginId;

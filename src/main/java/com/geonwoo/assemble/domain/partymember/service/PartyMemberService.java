@@ -17,22 +17,22 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PartyMemberService {
 
-    private final PartyMemberJdbcRepository repository;
+    private final PartyMemberJdbcRepository partyMemberJdbcRepository;
 
     @Transactional
     public Long save(Long memberId, Long partyId) {
-        return repository.findByMemberIdAndPartyId(memberId, partyId)
+        return partyMemberJdbcRepository.findByMemberIdAndPartyId(memberId, partyId)
                 .map(PartyMember::getId)
                 .orElseGet(() -> {
                     PartyMember partyMember = new PartyMember(partyId, memberId, PartyMemberRole.MEMBER);
-                    return repository.save(partyMember);
+                    return partyMemberJdbcRepository.save(partyMember);
                 });
     }
 
     @Transactional
     public PartyMemberDTOs findAllByPartyId(Long userId, Long partyId) {
 
-        List<PartyMemberDTO> partymemberDTOList = repository.findAllByPartyId(partyId);
+        List<PartyMemberDTO> partymemberDTOList = partyMemberJdbcRepository.findAllByPartyId(partyId);
 
         PartyMemberDTO partyMemberDTO = partymemberDTOList.stream()
                 .filter(pm -> Objects.equals(pm.getMemberId(), userId))
@@ -51,7 +51,7 @@ public class PartyMemberService {
 
     @Transactional
     public void delete(Long id) {
-        repository.delete(id);
+        partyMemberJdbcRepository.delete(id);
     }
 
 }
