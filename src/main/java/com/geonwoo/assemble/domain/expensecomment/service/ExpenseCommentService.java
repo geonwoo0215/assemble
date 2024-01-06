@@ -2,6 +2,7 @@ package com.geonwoo.assemble.domain.expensecomment.service;
 
 import com.geonwoo.assemble.domain.expensecomment.dto.ExpenseCommentDTO;
 import com.geonwoo.assemble.domain.expensecomment.dto.ExpenseCommentSaveDTO;
+import com.geonwoo.assemble.domain.expensecomment.exception.ExpenseCommentNotFoundException;
 import com.geonwoo.assemble.domain.expensecomment.model.ExpenseComment;
 import com.geonwoo.assemble.domain.expensecomment.repository.ExpenseCommentJdbcRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,8 @@ public class ExpenseCommentService {
         } else {
 
             ExpenseComment parentExpenseComment = expenseCommentJdbcRepository.findById(expenseCommentSaveDTO.getCommentId())
-                    .orElseThrow(RuntimeException::new);
+                    .orElseThrow(() -> new ExpenseCommentNotFoundException(expenseCommentSaveDTO.getCommentId()));
+
             ExpenseComment expenseComment = new ExpenseComment(expenseId,
                     expenseCommentSaveDTO.getPartyMemberId(),
                     expenseCommentSaveDTO.getComment(),

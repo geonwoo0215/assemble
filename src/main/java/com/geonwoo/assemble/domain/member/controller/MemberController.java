@@ -4,6 +4,7 @@ import com.geonwoo.assemble.domain.member.dto.MemberSignUpDTO;
 import com.geonwoo.assemble.domain.member.service.MemberService;
 import com.geonwoo.assemble.global.dto.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class MemberController {
     @PostMapping(value = "/members", consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<ApiResponse<Long>> singUp
             (
-                    @RequestBody MemberSignUpDTO memberSignUpDTO,
+                    @RequestBody @Valid MemberSignUpDTO memberSignUpDTO,
                     HttpServletRequest request
             ) {
         Long id = memberService.singUp(memberSignUpDTO);

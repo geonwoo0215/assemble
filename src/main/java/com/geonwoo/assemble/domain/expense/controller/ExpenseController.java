@@ -6,6 +6,7 @@ import com.geonwoo.assemble.domain.expense.dto.ExpenseSaveDTO;
 import com.geonwoo.assemble.domain.expense.service.ExpenseService;
 import com.geonwoo.assemble.global.dto.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class ExpenseController {
     @PostMapping(value = "/partys/{partyId}/expense", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<Long>> save
             (
-                    @RequestBody ExpenseSaveDTO expenseSaveDTO,
+                    @RequestBody @Valid ExpenseSaveDTO expenseSaveDTO,
                     @PathVariable("partyId") Long partyId,
                     HttpServletRequest request
             ) {

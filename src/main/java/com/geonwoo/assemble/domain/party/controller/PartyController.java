@@ -7,6 +7,7 @@ import com.geonwoo.assemble.domain.party.dto.PartyUpdateDTO;
 import com.geonwoo.assemble.domain.party.service.PartyService;
 import com.geonwoo.assemble.global.dto.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class PartyController {
     @PostMapping(value = "/partys", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<Long>> save
             (
-                    @RequestBody PartySaveDTO partySaveDTO,
+                    @RequestBody @Valid PartySaveDTO partySaveDTO,
                     @AuthenticationPrincipal Long userId,
                     HttpServletRequest request
             ) {

@@ -2,6 +2,7 @@ package com.geonwoo.assemble.domain.partymember.service;
 
 import com.geonwoo.assemble.domain.partymember.dto.PartyMemberDTO;
 import com.geonwoo.assemble.domain.partymember.dto.PartyMemberDTOs;
+import com.geonwoo.assemble.domain.partymember.exception.PartyMemberNotFoundException;
 import com.geonwoo.assemble.domain.partymember.model.PartyMember;
 import com.geonwoo.assemble.domain.partymember.model.PartyMemberRole;
 import com.geonwoo.assemble.domain.partymember.repository.PartyMemberJdbcRepository;
@@ -37,7 +38,7 @@ public class PartyMemberService {
         PartyMemberDTO partyMemberDTO = partymemberDTOList.stream()
                 .filter(pm -> Objects.equals(pm.getMemberId(), userId))
                 .findAny()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new PartyMemberNotFoundException(userId));
 
 
         List<PartyMemberDTO> list = partymemberDTOList

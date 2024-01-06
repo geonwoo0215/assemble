@@ -100,7 +100,7 @@ class ExpenseControllerTest {
     @Transactional
     void 비용_저장_API_성공() throws Exception {
 
-        ExpenseSaveDTO expenseSaveDTO = new ExpenseSaveDTO(payerPartyMemberId1, 1000, "1차 회식비용", List.of(partyMemberId2), List.of());
+        ExpenseSaveDTO expenseSaveDTO = new ExpenseSaveDTO(null, 1000, "1차 회식비용", List.of(partyMemberId2), List.of());
 
         String json = objectMapper.writeValueAsString(expenseSaveDTO);
 

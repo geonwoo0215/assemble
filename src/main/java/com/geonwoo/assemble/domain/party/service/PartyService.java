@@ -5,6 +5,7 @@ import com.geonwoo.assemble.domain.party.dto.PartyDTO;
 import com.geonwoo.assemble.domain.party.dto.PartyDetailDTO;
 import com.geonwoo.assemble.domain.party.dto.PartySaveDTO;
 import com.geonwoo.assemble.domain.party.dto.PartyUpdateDTO;
+import com.geonwoo.assemble.domain.party.exception.PartyNotFoundException;
 import com.geonwoo.assemble.domain.party.model.Party;
 import com.geonwoo.assemble.domain.party.repository.PartyJdbcRepository;
 import com.geonwoo.assemble.domain.partymember.model.PartyMember;
@@ -50,8 +51,8 @@ public class PartyService {
 
         PartyDetailDTO partyDetailDTO = partyJdbcRepository.findById(id)
                 .map(a -> a.toPartyDetailDTO(imageUrls))
-                .orElseThrow(RuntimeException::new);
-
+                .orElseThrow(() -> new PartyNotFoundException(id));
+        
         return partyDetailDTO;
     }
 

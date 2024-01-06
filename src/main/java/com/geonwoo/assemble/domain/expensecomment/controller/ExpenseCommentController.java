@@ -5,6 +5,7 @@ import com.geonwoo.assemble.domain.expensecomment.dto.ExpenseCommentSaveDTO;
 import com.geonwoo.assemble.domain.expensecomment.service.ExpenseCommentService;
 import com.geonwoo.assemble.global.dto.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -24,7 +25,7 @@ public class ExpenseCommentController {
     @PostMapping(value = "/partys/{partyId}/expense/{expenseId}/comment", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<Long>> save
             (
-                    @RequestBody ExpenseCommentSaveDTO expenseCommentSaveDTO,
+                    @RequestBody @Valid ExpenseCommentSaveDTO expenseCommentSaveDTO,
                     @PathVariable("expenseId") Long expenseId,
                     HttpServletRequest request
             ) {

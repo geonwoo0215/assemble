@@ -1,5 +1,6 @@
 package com.geonwoo.assemble.domain.invitation.service;
 
+import com.geonwoo.assemble.domain.invitation.exception.InvitationNotFoundException;
 import com.geonwoo.assemble.domain.invitation.model.Invitation;
 import com.geonwoo.assemble.domain.invitation.repository.InvitationJdbcRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class InvitationService {
 
     public Long validateCode(String inviteCode) {
         Invitation invitation = invitationJdbcRepository.findByInviteCode(inviteCode)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new InvitationNotFoundException(inviteCode));
         invitation.validateExpiredDate();
         return invitation.getPartyId();
     }

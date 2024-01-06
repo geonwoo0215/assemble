@@ -3,6 +3,8 @@ package com.geonwoo.assemble.domain.expense.service;
 import com.geonwoo.assemble.domain.expense.dto.ExpenseDTO;
 import com.geonwoo.assemble.domain.expense.dto.ExpenseDetailDTO;
 import com.geonwoo.assemble.domain.expense.dto.ExpenseSaveDTO;
+import com.geonwoo.assemble.domain.expense.exception.ExpenseNotFoundException;
+import com.geonwoo.assemble.domain.expense.exception.PayerNotFoundException;
 import com.geonwoo.assemble.domain.expense.model.Expense;
 import com.geonwoo.assemble.domain.expense.repository.ExpenseJdbcRepository;
 import com.geonwoo.assemble.domain.imageurl.model.ImageUrl;
@@ -50,14 +52,14 @@ public class ExpenseService {
     }
 
     public ExpenseDetailDTO findExpenseAndMembersById(Long id) {
-        Expense expense = expenseJdbcRepository.findById(id).orElseThrow(RuntimeException::new);
+        Expense expense = expenseJdbcRepository.findById(id).orElseThrow(() -> new ExpenseNotFoundException(id));
         List<PartyMemberExpenseDTO> memberExpenseDTOList = partyMemberExpenseJdbcRepository.findByExpenseId(id);
 
         String payerNickname = memberExpenseDTOList.stream()
                 .filter(PartyMemberExpenseDTO::isPayer)
                 .findFirst()
                 .map(PartyMemberExpenseDTO::getNickname)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(PayerNotFoundException::new);
 
         List<String> memberNames = memberExpenseDTOList.stream()
                 .filter(partyMemberExpenseDTO -> !partyMemberExpenseDTO.isPayer())
