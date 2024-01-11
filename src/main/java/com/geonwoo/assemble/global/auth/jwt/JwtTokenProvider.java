@@ -1,6 +1,7 @@
 package com.geonwoo.assemble.global.auth.jwt;
 
 import com.geonwoo.assemble.domain.member.model.MemberRole;
+import com.geonwoo.assemble.global.auth.token.repository.RefreshTokenJdbcRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,14 +23,21 @@ public class JwtTokenProvider {
     private final String issuer;
     private final String secretKey;
     private final long expirationSeconds;
+    private final long refreshExpirationHours;
+    private final RefreshTokenJdbcRepository refreshTokenJdbcRepository;
 
     public JwtTokenProvider(
             @Value("${issuer}") String issuer,
             @Value("${secret-key}") String secretKey,
-            @Value("${expiration-seconds}") long expirationSeconds) {
+            @Value("${expiration-seconds}") long expirationSeconds,
+            @Value("${refresh-expiration-hours}") long refreshExpirationHours,
+            RefreshTokenJdbcRepository refreshTokenJdbcRepository
+    ) {
         this.issuer = issuer;
         this.secretKey = secretKey;
         this.expirationSeconds = expirationSeconds;
+        this.refreshExpirationHours = refreshExpirationHours;
+        this.refreshTokenJdbcRepository = refreshTokenJdbcRepository;
     }
 
     public String createToken(Long userId, MemberRole role) {
@@ -46,6 +54,17 @@ public class JwtTokenProvider {
                 .setExpiration(Date.from(Instant.now().plus(expirationSeconds, ChronoUnit.SECONDS)))
                 .compact();
     }
+
+    public String createRefreshToken() {
+
+        return Jwts.builder()
+                .signWith(new SecretKeySpec(secretKey.getBytes(), SignatureAlgorithm.HS512.getJcaName()))
+                .setIssuer(issuer)
+                .setIssuedAt(Date.from(Instant.now()))
+                .setExpiration(Date.from(Instant.now().plus(refreshExpirationHours, ChronoUnit.HOURS)))
+                .compact();
+    }
+
 
     public Claims getClaims(String token) {
         return Jwts.parserBuilder()
@@ -71,7 +90,7 @@ public class JwtTokenProvider {
                     .build()
                     .parseClaimsJws(token);
         } catch (ExpiredJwtException e) {
-            throw new RuntimeException(e);
+            throw e;
         } catch (UnsupportedJwtException e) {
             throw new RuntimeException(e);
         } catch (MalformedJwtException e) {

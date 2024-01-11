@@ -1,3 +1,4 @@
+drop table if exists refresh_token CASCADE;
 drop table if exists image_url CASCADE;
 drop table if exists expense_comment CASCADE;
 drop table if exists invitation CASCADE;
@@ -91,4 +92,13 @@ create table image_url
 
     FOREIGN KEY (expense_id) references expense (id),
     FOREIGN KEY (party_id) references party (id)
+);
+
+create table refresh_token
+(
+    id            bigint auto_increment primary key,
+    refresh_token CLOB,
+    member_id     bigint,
+    role          varchar(10),
+    FOREIGN KEY (member_id) references member (id)
 )

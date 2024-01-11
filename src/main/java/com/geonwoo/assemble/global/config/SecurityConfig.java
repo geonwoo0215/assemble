@@ -3,11 +3,14 @@ package com.geonwoo.assemble.global.config;
 import com.geonwoo.assemble.global.auth.PrincipalDetails;
 import com.geonwoo.assemble.global.auth.jwt.JwtFilter;
 import com.geonwoo.assemble.global.auth.jwt.JwtTokenProvider;
+import com.geonwoo.assemble.global.auth.token.service.RefreshTokenService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -23,10 +26,12 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@Slf4j
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenService refreshTokenService;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -36,10 +41,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource configurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(List.of("http://127.0.0.1:5500"));
-        configuration.setAllowedOrigins(List.of("*"));
+        configuration.setAllowedOrigins(List.of("http://127.0.0.1:5500"));
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
         configuration.addExposedHeader("Authorization");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -58,17 +63,37 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(form -> form
-                        .loginPage("/member/login")
+                        .loginProcessingUrl("/login")
                         .usernameParameter("loginId")
                         .passwordParameter("password")
                         .successHandler((request, response, authentication) -> {
                             PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
-                            String token = jwtTokenProvider.createToken(userDetails.getUserId(), userDetails.getMemberRole());
-                            response.addHeader(HttpHeaders.AUTHORIZATION, token);
+                            String accessToken = jwtTokenProvider.createToken(userDetails.getUserId(), userDetails.getMemberRole());
+                            String refreshToken = jwtTokenProvider.createRefreshToken();
+                            log.info("refresh token == {}", refreshToken);
+                            refreshTokenService.save(userDetails.getUserId(), userDetails.getMemberRole(), refreshToken);
+                            response.addHeader(HttpHeaders.AUTHORIZATION, accessToken);
+
+                            ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
+                                    .path("/")
+                                    .sameSite("None")
+                                    .httpOnly(false)
+                                    .secure(true)
+                                    .maxAge(60 * 60 * 24)
+                                    .build();
+
+                            response.addHeader("Set-Cookie", cookie.toString());
+
                         })
                         .failureHandler((request, response, exception) -> {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                             response.getWriter().write("Login failed");
+                            response.getWriter().flush();
+                        }))
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.getWriter().write("Unauthorized: " + authException.getMessage());
                             response.getWriter().flush();
                         }))
                 .logout(logout -> logout

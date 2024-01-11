@@ -1,6 +1,7 @@
 package com.geonwoo.assemble.global.exception;
 
 import com.geonwoo.assemble.global.dto.ErrorResponse;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(e.getStatus())
                 .body(new ErrorResponse(e.getMessage()));
-
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -44,6 +44,13 @@ public class GlobalExceptionHandler {
         log.warn("[EXCEPTION] FIELD_ERROR [{}]", e.getBindingResult().getFieldError());
 
         return new ErrorResponse(Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ExpiredJwtException.class)
+    public void handleExpiredJwtException(HttpServletRequest request, ExpiredJwtException e) {
+
+
     }
 
 }
